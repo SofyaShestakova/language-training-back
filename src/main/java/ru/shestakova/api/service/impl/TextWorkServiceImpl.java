@@ -3,6 +3,7 @@ package ru.shestakova.api.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shestakova.api.model.filter.TextWorkFilter;
+import ru.shestakova.api.model.text.TextWork;
 import ru.shestakova.api.model.user.UserRole;
 import ru.shestakova.api.request.text.CreateWorkRequest;
 import ru.shestakova.api.request.text.EditWorkRequest;

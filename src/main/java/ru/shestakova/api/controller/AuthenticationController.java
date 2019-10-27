@@ -10,6 +10,7 @@ import ru.shestakova.api.response.forum.RegistrationResponse;
 import ru.shestakova.api.response.user.AuthenticationResponse;
 import ru.shestakova.api.service.AuthenticationService;
 
+@CrossOrigin
 @RestController
 @RequestMapping(
     path = "/auth",

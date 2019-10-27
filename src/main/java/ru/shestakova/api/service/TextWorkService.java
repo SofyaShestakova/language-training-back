@@ -1,6 +1,7 @@
 package ru.shestakova.api.service;
 
 import ru.shestakova.api.model.filter.TextWorkFilter;
+import ru.shestakova.api.model.text.TextWork;
 import ru.shestakova.api.request.text.CreateWorkRequest;
 import ru.shestakova.api.request.text.EditWorkRequest;
 import ru.shestakova.api.response.text.CreateWorkResponse;

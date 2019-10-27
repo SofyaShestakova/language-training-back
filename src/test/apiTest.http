@@ -1,0 +1,7 @@
+GET http://localhost:8082/auth
+Content-Type: application/json;charset=UTF-8
+Username: pavel
+Password: 123456
+
+{}
+###

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.shestakova.api.model.text.TextWork;
 import ru.shestakova.api.request.text.CreateWorkRequest;
 import ru.shestakova.api.request.text.EditWorkRequest;
 import ru.shestakova.api.response.text.GetWorksResponse;
