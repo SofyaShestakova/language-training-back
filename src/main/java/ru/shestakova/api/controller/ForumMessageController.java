@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
     produces = MediaType.APPLICATION_JSON_UTF8_VALUE
 )
 @AllArgsConstructor
+@CrossOrigin
 public class ForumMessageController {
 
   private ForumMessageService messageService;

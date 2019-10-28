@@ -25,6 +25,7 @@ import java.util.List;
     produces = MediaType.APPLICATION_JSON_UTF8_VALUE
 )
 @AllArgsConstructor
+@CrossOrigin
 public class ForumThemeController {
 
   private ForumThemeService themeService;

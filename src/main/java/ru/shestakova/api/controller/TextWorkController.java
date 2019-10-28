@@ -18,6 +18,7 @@ import ru.shestakova.api.service.TextWorkService;
     produces = MediaType.APPLICATION_JSON_UTF8_VALUE
 )
 @AllArgsConstructor
+@CrossOrigin
 public class TextWorkController {
 
   private TextWorkService workService;

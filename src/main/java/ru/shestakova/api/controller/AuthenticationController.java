@@ -21,7 +21,7 @@ public class AuthenticationController {
 
   private AuthenticationService authService;
 
-  @GetMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+  @GetMapping
   public ResponseEntity<AuthenticationResponse> authenticateUser(
       @RequestHeader(name = "Username") String username,
       @RequestHeader(name = "Password") String password

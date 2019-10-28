@@ -5,3 +5,34 @@ Password: 123456
 
 {}
 ###
+
+
+GET http://localhost:8082/forum/topics
+Content-Type: application/json
+UserId: 2
+
+{
+  "themeName": "asdas",
+  "text": "sadas"
+}
+###
+
+
+POST http://localhost:8082/forum/topics
+Content-Type: application/json
+
+{
+  "themeName": "asdas",
+  "text": "sadas"
+}
+###
+
+POST http://localhost:8082/texts
+Content-Type: application/json
+
+
+{
+  "text": "this is a text",
+  "UserId": 1
+}
+###
