@@ -29,10 +29,12 @@ Content-Type: application/json
 
 POST http://localhost:8082/texts
 Content-Type: application/json
-
+Username: pavel
+Password: 123456
+Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
 
 {
-  "text": "this is a text",
-  "UserId": 1
+  "title": "some title",
+  "text": "this is a text"
 }
 ###

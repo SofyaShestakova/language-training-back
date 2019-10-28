@@ -82,6 +82,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     if (isWhitelisted && !hasMatches) {
       // Если включен режим белого списка URL'ов, подлежащих авторизации (кто попал - тот авторизуется)
       // и запрашиваемый URL не в белом списке
+
       chain.doFilter(request, response);
       return;
     } else if (!isWhitelisted && hasMatches) {

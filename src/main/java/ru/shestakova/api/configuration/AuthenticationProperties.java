@@ -18,12 +18,13 @@ public class AuthenticationProperties {
 
   private Boolean whitelistMode = Boolean.TRUE;
   private List<String> patterns = Arrays.asList(
-      "POST /v1/api/forum/topics",
-      "PATCH /v1/api/forum/topics/[0-9]+",
-      "POST,DELETE /v1/api/forum/topics/[0-9]+/[a-zA-Z]+",
-      "POST /v1/api/forum/messages/[0-9]+",
-      "PATCH /v1/api/forum/messages/[0-9]+/[0-9]+",
-      "DELETE /v1/api/forum/messages/[0-9]+/[0-9]+/delete",
-      "* /v1/api/users"
+      "POST /forum/topics",
+      "POST,PATCH,DELETE /texts",
+      "PATCH /forum/topics/[0-9]+",
+      "POST,DELETE /forum/topics/[0-9]+/[a-zA-Z]+",
+      "POST /forum/messages/[0-9]+",
+      "PATCH /forum/messages/[0-9]+/[0-9]+",
+      "DELETE /forum/messages/[0-9]+/[0-9]+/delete",
+      "* /users"
   );
 }
