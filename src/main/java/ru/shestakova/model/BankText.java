@@ -23,7 +23,7 @@ public class BankText extends Timestampable {
   @Column(name = "Title", nullable = false)
   String title;
 
-  @Column(name = "Text", nullable = false)
+  @Column(name = "Text", nullable = false, length = 2048)
   String text;
 
   @ManyToOne

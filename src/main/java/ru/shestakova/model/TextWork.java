@@ -34,7 +34,7 @@ public class TextWork extends Timestampable {
   @Column(name = "WorkTitle", nullable = false)
   String workTitle;
 
-  @Column(name = "WorkText", nullable = false)
+  @Column(name = "WorkText", nullable = false, length = 2048)
   String workText;
 
   @Column(name = "Rating", nullable = false)
