@@ -36,7 +36,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     String password = request.getPassword();
 
     Optional<ServiceUser> userOptional = userRepository.findByUsername(username);
-    if (!userOptional.isPresent()) {
+    if (userOptional.isPresent()) {
       return new RegistrationResponse().setStatus(Status.USERNAME_ALREADY_EXISTS);
     }
 

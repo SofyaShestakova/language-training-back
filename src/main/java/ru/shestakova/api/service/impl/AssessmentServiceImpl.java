@@ -57,7 +57,7 @@ public class AssessmentServiceImpl implements AssessmentService {
       throw new PermissionException();
     }
 
-    if (!assessmentRepository
+    if (assessmentRepository
         .findByWorkWorkIdAndExpertUserId(work.getWorkId(), user.getUserId())
         .isPresent()) {
       return new CreateAssessmentResponse()
