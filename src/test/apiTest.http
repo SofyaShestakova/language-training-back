@@ -1,3 +1,5 @@
+
+##Запрос авторизации пользователя
 GET http://localhost:8180/auth
 Content-Type: application/json;charset=UTF-8
 Username: pavel
@@ -5,6 +7,7 @@ Password: 123456
 
 {}
 ###
+
 
 
 GET http://localhost:8082/forum/topics
@@ -17,7 +20,7 @@ UserId: 2
 }
 ###
 
-GET http://localhost:8082/works/topics
+GET http://localhost:8180/works/topics
 Content-Type: application/json
 UserId: 2
 
@@ -28,7 +31,7 @@ UserId: 2
 ###
 
 
-GET http://localhost:8180/texts/20
+GET http://localhost:8180/texts/1
 
 ###
 
@@ -54,7 +57,7 @@ Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
 ###
 
 
-POST http://localhost:12500/assessments
+POST http://localhost:8180/assessments
 Content-Type: application/json
 username: pavel
 Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
@@ -65,14 +68,16 @@ Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
 }
 ###
 
-POST http://localhost:8180/works
+## Рабочий запрос добавляющий работу
+POST http://localhost:12500/works
 Content-Type: application/json
-username: pavel
+Username: pavel
 Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
 
 {
-  "textId": "1",
-  "typeName": "3",
-  "text": "this is a text"
+  "textId": "5",
+  "type": "0",
+  "title": "title of the work",
+  "text": "text of the wor"
 }
 ###

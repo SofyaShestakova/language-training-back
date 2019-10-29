@@ -14,6 +14,6 @@ public class CreateWorkRequest {
 
   Integer textId;
   WorkType type;
-  String title;
+  String title = "";
   String text;
 }

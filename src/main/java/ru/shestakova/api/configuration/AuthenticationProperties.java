@@ -20,6 +20,7 @@ public class AuthenticationProperties {
   private List<String> patterns = Arrays.asList(
       "POST /forum/topics",
       "POST,PATCH,DELETE /texts",
+          "POST,PATCH,DELETE /works",
       "PATCH /forum/topics/[0-9]+",
       "POST,DELETE /forum/topics/[0-9]+/[a-zA-Z]+",
       "POST /forum/messages/[0-9]+",

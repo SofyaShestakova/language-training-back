@@ -36,12 +36,12 @@ public class TextWorkServiceImpl implements TextWorkService {
 
   @Override public CreateWorkResponse createWork(Long initiatorId, CreateWorkRequest request) {
     Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isPresent()) {
+    if (!userOptional.isPresent()) {
       return new CreateWorkResponse().setStatus(CreateWorkResponse.Status.INITIATOR_NOT_FOUND);
     }
 
     Optional<BankText> textOptional = textRepository.findById(request.getTextId());
-    if (textOptional.isPresent()) {
+    if (!textOptional.isPresent()) {
       return new CreateWorkResponse().setStatus(CreateWorkResponse.Status.TEXT_NOT_FOUND);
     }
 
@@ -102,7 +102,7 @@ public class TextWorkServiceImpl implements TextWorkService {
     }
 
     Optional<ru.shestakova.model.TextWork> workOptional = workRepository.findById(workId);
-    if (workOptional.isPresent()) {
+    if (!workOptional.isPresent()) {
       return new EditWorkResponse().setStatus(EditWorkResponse.Status.WORK_NOT_FOUND);
     }
 
@@ -136,12 +136,12 @@ public class TextWorkServiceImpl implements TextWorkService {
 
   @Override public DeleteWorkResponse deleteWork(Long initiatorId, Long workId) {
     Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isPresent()) {
+    if (!userOptional.isPresent()) {
       return new DeleteWorkResponse().setStatus(DeleteWorkResponse.Status.INITIATOR_NOT_FOUND);
     }
 
     Optional<ru.shestakova.model.TextWork> workOptional = workRepository.findById(workId);
-    if (workOptional.isPresent()) {
+    if (!workOptional.isPresent()) {
       return new DeleteWorkResponse().setStatus(DeleteWorkResponse.Status.WORK_NOT_FOUND);
     }
 
