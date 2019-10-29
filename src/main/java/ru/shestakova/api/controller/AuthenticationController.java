@@ -26,7 +26,7 @@ public class AuthenticationController {
       @RequestHeader(name = "Username") String username,
       @RequestHeader(name = "Password") String password
   ) {
-    var response = authService.authenticateUser(username, password);
+    AuthenticationResponse response = authService.authenticateUser(username, password);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response);
@@ -42,7 +42,7 @@ public class AuthenticationController {
   @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<RegistrationResponse> registrarUser(
       @RequestBody RegistrationRequest request) {
-    var response = authService.registrarUser(request);
+    RegistrationResponse response = authService.registrarUser(request);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response);

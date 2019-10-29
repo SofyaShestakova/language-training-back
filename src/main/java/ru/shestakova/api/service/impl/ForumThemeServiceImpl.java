@@ -17,11 +17,13 @@ import ru.shestakova.api.response.forum.TerminateThemeResponse;
 import ru.shestakova.api.service.ForumThemeService;
 import ru.shestakova.api.service.exception.PermissionException;
 import ru.shestakova.model.ForumMessage;
+import ru.shestakova.model.ServiceUser;
 import ru.shestakova.repository.ForumMessageRepository;
 import ru.shestakova.repository.ForumThemeRepository;
 import ru.shestakova.repository.ServiceUserRepository;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,15 +39,16 @@ public class ForumThemeServiceImpl implements ForumThemeService {
 
   @Transactional
   @Override public CreateThemeResponse createTheme(Long initiatorId, CreateThemeRequest request) {
-    var userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
+    if (userOptional.isPresent()) {
       return new CreateThemeResponse().setStatus(CreateThemeResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    var user = userOptional.get();
-    var userRole = UserRole.fromId(user.getRole());
-    var themeName = request.getThemeName();
-    var text = request.getText();
+    ServiceUser user = userOptional.get();
+    UserRole userRole = UserRole.fromId(user.getRole());
+    String themeName = request.getThemeName();
+
+    String text = request.getText();
 
     if (!userRole.isCanCreateThemes()) {
       throw new PermissionException();
@@ -53,7 +56,7 @@ public class ForumThemeServiceImpl implements ForumThemeService {
 
     Long now = Instant.now().toEpochMilli();
 
-    var theme = themeRepository.save(
+    ru.shestakova.model.ForumTheme theme = themeRepository.save(
         new ru.shestakova.model.ForumTheme()
             .setAuthor(user)
             .setThemeName(themeName)
@@ -62,7 +65,7 @@ public class ForumThemeServiceImpl implements ForumThemeService {
             .setTerminationStatus(ThemeTerminationStatus.OPENED.getValue())
     );
 
-    var message = new ForumMessage()
+    ForumMessage message = new ForumMessage()
         .setTheme(theme)
         .setAuthor(user)
         .setText(text)
@@ -82,9 +85,9 @@ public class ForumThemeServiceImpl implements ForumThemeService {
 
   @Override
   public GetThemesResponse findThemesByFilter(ForumThemeFilter filter) {
-    var themes = themeRepository.findThemesByFilter(mapFrom(filter)).stream()
+    List<ForumTheme> themes = themeRepository.findThemesByFilter(mapFrom(filter)).stream()
                                 .map(Mappers::mapFrom)
-                                .collect(Collectors.toUnmodifiableList());
+                                .collect(Collectors.toList());
 
     return new GetThemesResponse()
         .setLength(themes.size())
@@ -94,22 +97,22 @@ public class ForumThemeServiceImpl implements ForumThemeService {
   @Override
   @Transactional
   public EditThemeResponse editTheme(Long initiatorId, Integer themeId, EditThemeRequest request) {
-    var userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
+    if (userOptional.isPresent()) {
       return new EditThemeResponse().setStatus(EditThemeResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    var themeOptional = themeRepository.findById(themeId);
-    if (themeOptional.isEmpty()) {
+    Optional<ru.shestakova.model.ForumTheme> themeOptional = themeRepository.findById(themeId);
+    if (themeOptional.isPresent()) {
       return new EditThemeResponse().setStatus(EditThemeResponse.Status.THEME_NOT_FOUND);
     }
 
-    var user = userOptional.get();
-    var userRole = UserRole.fromId(user.getRole());
-    var theme = themeOptional.get();
+    ServiceUser user = userOptional.get();
+    UserRole userRole = UserRole.fromId(user.getRole());
+    ru.shestakova.model.ForumTheme theme = themeOptional.get();
 
     if (!user.getUserId().equals(theme.getAuthor().getUserId())) {
-      var othersRole = UserRole.fromId(theme.getAuthor().getRole());
+      UserRole othersRole = UserRole.fromId(theme.getAuthor().getRole());
 
       if (userRole.compare(othersRole) <= 0 || !userRole.isCanEditOthersThemes()) {
         throw new PermissionException();
@@ -128,24 +131,24 @@ public class ForumThemeServiceImpl implements ForumThemeService {
   @Override
   public TerminateThemeResponse terminateTheme(Long initiatorId, Integer themeId,
       ThemeTerminationStatus terminationStatus) {
-    var userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
+    if (userOptional.isPresent()) {
       return new TerminateThemeResponse()
           .setStatus(TerminateThemeResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    var themeOptional = themeRepository.findById(themeId);
-    if (themeOptional.isEmpty()) {
+    Optional<ru.shestakova.model.ForumTheme> themeOptional = themeRepository.findById(themeId);
+    if (themeOptional.isPresent()) {
       return new TerminateThemeResponse().setStatus(TerminateThemeResponse.Status.THEME_NOT_FOUND);
     }
 
-    var user = userOptional.get();
-    var userRole = UserRole.fromId(user.getRole());
-    var theme = themeOptional.get();
-    var previousStatus = ThemeTerminationStatus.fromNumeric(theme.getTerminationStatus());
+    ServiceUser user = userOptional.get();
+    UserRole userRole = UserRole.fromId(user.getRole());
+    ru.shestakova.model.ForumTheme theme = themeOptional.get();
+    ThemeTerminationStatus previousStatus = ThemeTerminationStatus.fromNumeric(theme.getTerminationStatus());
 
     if (!user.getUserId().equals(theme.getAuthor().getUserId())) {
-      var otherRole = UserRole.fromId(theme.getAuthor().getRole());
+      UserRole otherRole = UserRole.fromId(theme.getAuthor().getRole());
       if (userRole.compare(otherRole) <= 0) {
         throw new PermissionException();
       }
@@ -205,12 +208,12 @@ public class ForumThemeServiceImpl implements ForumThemeService {
     }
 
     theme.setTerminationStatus(terminationStatus.getValue());
-    var messages = messageRepository
+    List<ForumMessage> messages = messageRepository
         .findByThemeThemeId(themeId)
         .stream()
         .filter(message ->
             MessageTerminationStatus.DELETED.getValue() != message.getTerminationStatus())
-        .collect(Collectors.toUnmodifiableList());
+        .collect(Collectors.toList());
 
     if (messages.size() != 0) {
       switch (terminationStatus) {

@@ -38,7 +38,7 @@ public class ForumMessageController {
       @PathVariable(name = "themeId") Integer themeId,
       @RequestBody CreateMessageRequest request
   ) {
-    var response = messageService.createMessage(userId, themeId, request);
+    CreateMessageResponse response = messageService.createMessage(userId, themeId, request);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response);
@@ -74,7 +74,7 @@ public class ForumMessageController {
       @RequestParam(name = "deletedTo", required = false) Long deletedTo,
       @RequestParam(name = "status[]", required = false) List<Integer> intStatuses
   ) {
-    var filter = new ForumMessageFilter();
+    ForumMessageFilter filter = new ForumMessageFilter();
 
     if (themeId != null) {
       filter.setThemeId(themeId);
@@ -120,11 +120,11 @@ public class ForumMessageController {
       filter.setTerminationStatuses(
           intStatuses.stream()
                      .map(MessageTerminationStatus::fromNumeric)
-                     .collect(Collectors.toUnmodifiableList())
+                     .collect(Collectors.toList())
       );
     }
 
-    var response = messageService.getMessagesByFilter(filter);
+    GetMessagesResponse response = messageService.getMessagesByFilter(filter);
     if (response.getLength() == 0) {
       return ResponseEntity.noContent().build();
     } else {
@@ -139,7 +139,7 @@ public class ForumMessageController {
       @PathVariable(name = "messageId") Long messageId,
       @RequestBody EditMessageRequest request
   ) {
-    var response = messageService.editMessage(userId, themeId, messageId, request.getText());
+    EditMessageResponse response = messageService.editMessage(userId, themeId, messageId, request.getText());
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response);
@@ -158,7 +158,7 @@ public class ForumMessageController {
       @PathVariable(name = "themeId") Integer themeId,
       @PathVariable(name = "messageId") Long messageId
   ) {
-    var response = messageService.deleteMessage(userId, themeId, messageId);
+    TerminateMessageResponse response = messageService.deleteMessage(userId, themeId, messageId);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response);

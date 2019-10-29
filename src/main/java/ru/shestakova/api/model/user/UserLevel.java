@@ -25,7 +25,8 @@ public enum UserLevel {
       );
 
   public static UserLevel fromNumeric(int value) {
-    var level = numericToValue.get(value);
+    UserLevel level;
+    level = numericToValue.get(value);
     if(level == null) {
       throw new IllegalArgumentException("Unknown code: " + value);
     } else {

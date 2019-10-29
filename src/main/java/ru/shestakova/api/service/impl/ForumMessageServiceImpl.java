@@ -16,11 +16,14 @@ import ru.shestakova.api.response.forum.GetMessagesResponse;
 import ru.shestakova.api.response.forum.TerminateMessageResponse;
 import ru.shestakova.api.service.ForumMessageService;
 import ru.shestakova.api.service.exception.PermissionException;
+import ru.shestakova.model.ForumTheme;
+import ru.shestakova.model.ServiceUser;
 import ru.shestakova.repository.ForumMessageRepository;
 import ru.shestakova.repository.ForumThemeRepository;
 import ru.shestakova.repository.ServiceUserRepository;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,28 +41,28 @@ public class ForumMessageServiceImpl implements ForumMessageService {
   @Override
   public CreateMessageResponse createMessage(Long initiatorId, Integer themeId,
       CreateMessageRequest request) {
-    var userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
+    if (!userOptional.isPresent()) {
       return new CreateMessageResponse()
           .setStatus(CreateMessageResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    var themeOptional = themeRepository.findById(themeId);
-    if (themeOptional.isEmpty()) {
+    Optional<ForumTheme> themeOptional = themeRepository.findById(themeId);
+    if (themeOptional.isPresent()) {
       return new CreateMessageResponse().setStatus(CreateMessageResponse.Status.THEME_NOT_FOUND);
     }
 
-    var user = userOptional.get();
-    var userRole = UserRole.fromId(user.getRole());
-    var theme = themeOptional.get();
-    var text = request.getText();
-    var now = Instant.now().toEpochMilli();
+    ServiceUser user = userOptional.get();
+    UserRole userRole = UserRole.fromId(user.getRole());
+    ForumTheme theme = themeOptional.get();
+    String text = request.getText();
+    long now = Instant.now().toEpochMilli();
 
     if (!userRole.isCanCreateMessages()) {
       throw new PermissionException();
     }
 
-    var message = new ru.shestakova.model.ForumMessage()
+    ru.shestakova.model.ForumMessage message = new ru.shestakova.model.ForumMessage()
         .setAuthor(user)
         .setText(text)
         .setTheme(theme)
@@ -84,9 +87,9 @@ public class ForumMessageServiceImpl implements ForumMessageService {
 
   @Override
   public GetMessagesResponse getMessagesByFilter(ForumMessageFilter filter) {
-    var messages = messageRepository.findMessagesByFilter(mapFrom(filter)).stream()
+    List<ForumMessage> messages = messageRepository.findMessagesByFilter(mapFrom(filter)).stream()
                                     .map(Mappers::mapFrom)
-                                    .collect(Collectors.toUnmodifiableList());
+                                    .collect(Collectors.toList());
     return new GetMessagesResponse()
         .setLength(messages.size())
         .setMessages(messages);
@@ -95,34 +98,34 @@ public class ForumMessageServiceImpl implements ForumMessageService {
   @Transactional
   @Override
   public TerminateMessageResponse deleteMessage(Long initiatorId, Integer themeId, Long messageId) {
-    var userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
+    if (userOptional.isPresent()) {
       return new TerminateMessageResponse()
           .setStatus(TerminateMessageResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    var themeOptional = themeRepository.findById(themeId);
-    if (themeOptional.isEmpty()) {
+    Optional<ForumTheme> themeOptional = themeRepository.findById(themeId);
+    if (themeOptional.isPresent()) {
       return new TerminateMessageResponse()
           .setStatus(TerminateMessageResponse.Status.THEME_NOT_FOUND);
     }
 
-    var messageOptional = messageRepository.findByMessageIdAndThemeThemeId(messageId, themeId);
-    if (messageOptional.isEmpty()) {
+    Optional<ru.shestakova.model.ForumMessage> messageOptional = messageRepository.findByMessageIdAndThemeThemeId(messageId, themeId);
+    if (messageOptional.isPresent()) {
       return new TerminateMessageResponse()
           .setStatus(TerminateMessageResponse.Status.MESSAGE_NOT_FOUND);
     }
 
-    var user = userOptional.get();
-    var userRole = UserRole.fromId(user.getRole());
-    var theme = themeOptional.get();
-    var message = messageOptional.get();
-    var themeStatus = ThemeTerminationStatus.fromNumeric(theme.getTerminationStatus());
-    var prevStatus = MessageTerminationStatus.fromNumeric(message.getTerminationStatus());
-    var now = Instant.now().toEpochMilli();
+    ServiceUser user = userOptional.get();
+    UserRole userRole = UserRole.fromId(user.getRole());
+    ForumTheme theme = themeOptional.get();
+    ru.shestakova.model.ForumMessage message = messageOptional.get();
+    ThemeTerminationStatus themeStatus = ThemeTerminationStatus.fromNumeric(theme.getTerminationStatus());
+    MessageTerminationStatus prevStatus = MessageTerminationStatus.fromNumeric(message.getTerminationStatus());
+    long now = Instant.now().toEpochMilli();
 
     if (!user.getUserId().equals(message.getAuthor().getUserId())) {
-      var otherRole = UserRole.fromId(message.getAuthor().getRole());
+      UserRole otherRole = UserRole.fromId(message.getAuthor().getRole());
 
       if (userRole.compare(otherRole) <= 0 || !userRole.isCanDeleteOthersMessages()) {
         throw new PermissionException();
@@ -151,27 +154,27 @@ public class ForumMessageServiceImpl implements ForumMessageService {
   @Override
   public EditMessageResponse editMessage(Long initiatorId, Integer themeId, Long messageId,
       String text) {
-    var userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
+    if (userOptional.isPresent()) {
       return new EditMessageResponse().setStatus(EditMessageResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    var themeOptional = themeRepository.findById(themeId);
-    if (themeOptional.isEmpty()) {
+    Optional<ForumTheme> themeOptional = themeRepository.findById(themeId);
+    if (themeOptional.isPresent()) {
       return new EditMessageResponse().setStatus(EditMessageResponse.Status.THEME_NOT_FOUND);
     }
 
-    var messageOptional = messageRepository.findByMessageIdAndThemeThemeId(messageId, themeId);
-    if (messageOptional.isEmpty()) {
+    Optional<ru.shestakova.model.ForumMessage> messageOptional = messageRepository.findByMessageIdAndThemeThemeId(messageId, themeId);
+    if (messageOptional.isPresent()) {
       return new EditMessageResponse().setStatus(EditMessageResponse.Status.MESSAGE_NOT_FOUND);
     }
 
-    var user = userOptional.get();
-    var userRole = UserRole.fromId(user.getRole());
-    var message = messageOptional.get();
+    ServiceUser user = userOptional.get();
+    UserRole userRole = UserRole.fromId(user.getRole());
+    ru.shestakova.model.ForumMessage message = messageOptional.get();
 
     if (!user.getUserId().equals(message.getAuthor().getUserId())) {
-      var otherRole = UserRole.fromId(message.getAuthor().getRole());
+      UserRole otherRole = UserRole.fromId(message.getAuthor().getRole());
 
       if(userRole.compare(otherRole) <= 0 || !userRole.isCanEditOthersMessages()) {
         throw new PermissionException();

@@ -16,6 +16,7 @@ import ru.shestakova.model.ServiceUser;
 import ru.shestakova.model.UserDetails;
 import ru.shestakova.repository.ServiceUserRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static ru.shestakova.api.service.impl.Mappers.mapFrom;
@@ -31,15 +32,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Transactional
   @Override
   public RegistrationResponse registrarUser(RegistrationRequest request) {
-    var username = request.getUsername();
-    var password = request.getPassword();
+    String username = request.getUsername();
+    String password = request.getPassword();
 
-    var userOptional = userRepository.findByUsername(username);
-    if (userOptional.isPresent()) {
+    Optional<ServiceUser> userOptional = userRepository.findByUsername(username);
+    if (!userOptional.isPresent()) {
       return new RegistrationResponse().setStatus(Status.USERNAME_ALREADY_EXISTS);
     }
 
-    var user = userRepository.save(
+    ServiceUser user = userRepository.save(
         new ServiceUser()
             .setUsername(username)
             .setPassword(password)
@@ -47,7 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .setRole(UserRole.USER.getRoleId())
     );
 
-    var details = new UserDetails()
+    UserDetails details = new UserDetails()
         .setUserId(user.getUserId())
         .setScreenName(properties.getDefaultScreenName())
         .setLevelCode(UserLevel.BEGINNER.getValue())
@@ -64,12 +65,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Transactional
   @Override
   public AuthenticationResponse authenticateUser(String username, String password) {
-    var userOptional = userRepository.findByUsername(username);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findByUsername(username);
+    if (!userOptional.isPresent()) {
       return new AuthenticationResponse().setStatus(AuthenticationResponse.Status.USER_NOT_FOUND);
     }
 
-    var user = userOptional.get();
+    ServiceUser user = userOptional.get();
     if (!user.getPassword().equals(password)) {
       return new AuthenticationResponse()
           .setStatus(AuthenticationResponse.Status.WRONG_CREDENTIALS);
@@ -93,12 +94,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Transactional
   @Override
   public AuthenticationResponse authenticateUserByToken(String username, UUID token) {
-    var userOptional = userRepository.findByUsername(username);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findByUsername(username);
+    if (!userOptional.isPresent()) {
       return new AuthenticationResponse().setStatus(AuthenticationResponse.Status.USER_NOT_FOUND);
     }
 
-    var user = userOptional.get();
+    ServiceUser user = userOptional.get();
     if (!user.getAuthToken().equals(token)) {
       return new AuthenticationResponse()
           .setStatus(AuthenticationResponse.Status.WRONG_CREDENTIALS);

@@ -23,7 +23,7 @@ public enum WorkType {
       ));
 
   public static WorkType fromNumeric(int value) {
-    var type = codeToWorkType.get(value);
+    WorkType type = codeToWorkType.get(value);
     if(type == null) {
       throw new IllegalArgumentException("Unknown code: " + value);
     } else {

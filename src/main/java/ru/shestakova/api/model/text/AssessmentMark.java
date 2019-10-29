@@ -1,14 +1,9 @@
 package ru.shestakova.api.model.text;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Getter
-@AllArgsConstructor
 public enum AssessmentMark {
   EXCELLENT(5),
   GOOD(4),
@@ -18,7 +13,11 @@ public enum AssessmentMark {
 
   int value;
 
-  private static Map<Integer, AssessmentMark> valueToMark =
+    AssessmentMark(int value) {
+        this.value = value;
+    }
+
+    private static Map<Integer, AssessmentMark> valueToMark =
       Stream.of(AssessmentMark.values()).collect(Collectors.toMap(
           AssessmentMark::getValue,
           mark -> mark)
@@ -31,4 +30,8 @@ public enum AssessmentMark {
       return valueToMark.get(value);
     }
   }
+
+    public int getValue() {
+        return value;
+    }
 }

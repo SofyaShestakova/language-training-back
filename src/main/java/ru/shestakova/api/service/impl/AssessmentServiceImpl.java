@@ -14,10 +14,13 @@ import ru.shestakova.api.response.text.EditAssessmentResponse;
 import ru.shestakova.api.response.text.GetAssessmentsResponse;
 import ru.shestakova.api.service.AssessmentService;
 import ru.shestakova.api.service.exception.PermissionException;
+import ru.shestakova.model.ServiceUser;
+import ru.shestakova.model.TextWork;
 import ru.shestakova.repository.AssessmentRepository;
 import ru.shestakova.repository.ServiceUserRepository;
 import ru.shestakova.repository.TextWorkRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,34 +37,34 @@ public class AssessmentServiceImpl implements AssessmentService {
   @Override
   public CreateAssessmentResponse createAssessment(Long initiatorId,
       CreateAssessmentRequest request) {
-    var userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
+    if (!userOptional.isPresent()) {
       return new CreateAssessmentResponse()
           .setStatus(CreateAssessmentResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    var workOptional = workRepository.findById(request.getWorkId());
-    if (workOptional.isEmpty()) {
+    Optional<TextWork> workOptional = workRepository.findById(request.getWorkId());
+    if (!workOptional.isPresent()) {
       return new CreateAssessmentResponse()
           .setStatus(CreateAssessmentResponse.Status.WORK_NOT_FOUND);
     }
 
-    var user = userOptional.get();
-    var userRole = UserRole.fromId(user.getRole());
-    var work = workOptional.get();
+    ServiceUser user = userOptional.get();
+    UserRole userRole = UserRole.fromId(user.getRole());
+    TextWork work = workOptional.get();
 
     if (!userRole.isCanCreateAssessments()) {
       throw new PermissionException();
     }
 
-    if (assessmentRepository
+    if (!assessmentRepository
         .findByWorkWorkIdAndExpertUserId(work.getWorkId(), user.getUserId())
         .isPresent()) {
       return new CreateAssessmentResponse()
           .setStatus(CreateAssessmentResponse.Status.ASSESSMENT_ALREADY_EXISTS);
     }
 
-    var assessment = assessmentRepository.save(
+    ru.shestakova.model.Assessment assessment = assessmentRepository.save(
         new ru.shestakova.model.Assessment()
             .setComment(request.getComment())
             .setMarkRating(request.getMark().getValue())
@@ -79,10 +82,10 @@ public class AssessmentServiceImpl implements AssessmentService {
   }
 
   @Override public GetAssessmentsResponse findAssessmentsByFilter(AssessmentFilter filter) {
-    var assessments = assessmentRepository.findAllByFilter(mapFrom(filter))
+    List<Assessment> assessments = assessmentRepository.findAllByFilter(mapFrom(filter))
                                           .stream()
                                           .map(Mappers::mapFrom)
-                                          .collect(Collectors.toUnmodifiableList());
+                                          .collect(Collectors.toList());
     return new GetAssessmentsResponse()
         .setLength(assessments.size())
         .setAssessments(assessments);
@@ -92,24 +95,24 @@ public class AssessmentServiceImpl implements AssessmentService {
   @Override
   public EditAssessmentResponse editAssessment(Long initiatorId, Long assessmentId,
       EditAssessmentRequest request) {
-    var userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
+    if (!userOptional.isPresent()) {
       return new EditAssessmentResponse()
           .setStatus(EditAssessmentResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    var assessmentOptional = assessmentRepository.findById(assessmentId);
-    if (assessmentOptional.isEmpty()) {
+    Optional<ru.shestakova.model.Assessment> assessmentOptional = assessmentRepository.findById(assessmentId);
+    if (!assessmentOptional.isPresent()) {
       return new EditAssessmentResponse()
           .setStatus(EditAssessmentResponse.Status.ASSESSMENT_NOT_FOUND);
     }
 
-    var user = userOptional.get();
-    var userRole = UserRole.fromId(user.getRole());
-    var assessment = assessmentOptional.get();
+    ServiceUser user = userOptional.get();
+    UserRole userRole = UserRole.fromId(user.getRole());
+    ru.shestakova.model.Assessment assessment = assessmentOptional.get();
 
     if (!user.getUserId().equals(assessment.getExpert().getUserId())) {
-      var otherRole = UserRole.fromId(assessment.getExpert().getRole());
+      UserRole otherRole = UserRole.fromId(assessment.getExpert().getRole());
       if (userRole.compare(otherRole) <= 0 || !userRole.isCanEditOthersAssessments()) {
         throw new PermissionException();
       }
@@ -130,24 +133,24 @@ public class AssessmentServiceImpl implements AssessmentService {
   }
 
   @Override public DeleteAssessmentResponse deleteAssessment(Long initiatorId, Long assessmentId) {
-    var userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
+    if (!userOptional.isPresent()) {
       return new DeleteAssessmentResponse()
           .setStatus(DeleteAssessmentResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    var assessmentOptional = assessmentRepository.findById(assessmentId);
-    if (assessmentOptional.isEmpty()) {
+    Optional<ru.shestakova.model.Assessment> assessmentOptional = assessmentRepository.findById(assessmentId);
+    if (!assessmentOptional.isPresent()) {
       return new DeleteAssessmentResponse()
           .setStatus(DeleteAssessmentResponse.Status.ASSESSMENT_NOT_FOUND);
     }
 
-    var user = userOptional.get();
-    var userRole = UserRole.fromId(user.getRole());
-    var assessment = assessmentOptional.get();
+    ServiceUser user = userOptional.get();
+    UserRole userRole = UserRole.fromId(user.getRole());
+    ru.shestakova.model.Assessment assessment = assessmentOptional.get();
 
     if (!user.getUserId().equals(assessment.getExpert().getUserId())) {
-      var otherRole = UserRole.fromId(assessment.getExpert().getRole());
+      UserRole otherRole = UserRole.fromId(assessment.getExpert().getRole());
       if (userRole.compare(otherRole) <= 0 || !userRole.isCanDeleteOthersAssessments()) {
         throw new PermissionException();
       }

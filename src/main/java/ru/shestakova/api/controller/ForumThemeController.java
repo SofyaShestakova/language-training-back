@@ -10,6 +10,8 @@ import ru.shestakova.api.model.forum.ForumTheme;
 import ru.shestakova.api.model.forum.ThemeTerminationStatus;
 import ru.shestakova.api.request.forum.CreateThemeRequest;
 import ru.shestakova.api.request.forum.EditThemeRequest;
+import ru.shestakova.api.response.forum.CreateThemeResponse;
+import ru.shestakova.api.response.forum.EditThemeResponse;
 import ru.shestakova.api.response.forum.GetThemesResponse;
 import ru.shestakova.api.response.forum.TerminateThemeResponse;
 import ru.shestakova.api.service.ForumThemeService;
@@ -35,7 +37,8 @@ public class ForumThemeController {
       @RequestAttribute(name = "UserId") Long userId,
       @RequestBody CreateThemeRequest request
   ) {
-    var response = themeService.createTheme(userId, request);
+    CreateThemeResponse response;
+    response = themeService.createTheme(userId, request);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getTheme());
@@ -68,7 +71,7 @@ public class ForumThemeController {
       @RequestParam(name = "totalMessagesTo", required = false) Integer totalMessagesTo,
       @RequestParam(name = "status[]", required = false) List<Integer> intStatuses
   ) {
-    var filter = new ForumThemeFilter();
+    ForumThemeFilter filter = new ForumThemeFilter();
     if (authorId != null) {
       filter.setAuthorId(authorId);
     }
@@ -114,8 +117,8 @@ public class ForumThemeController {
     }
 
     if (intStatuses != null && !intStatuses.isEmpty()) {
-      var statuses = new ArrayList<ThemeTerminationStatus>(intStatuses.size());
-      for (var intStatus : intStatuses) {
+      ArrayList<ThemeTerminationStatus> statuses = new ArrayList<ThemeTerminationStatus>(intStatuses.size());
+      for (Integer intStatus : intStatuses) {
         if (ThemeTerminationStatus.isValid(intStatus)) {
           statuses.add(ThemeTerminationStatus.fromNumeric(intStatus));
         } else {
@@ -125,7 +128,7 @@ public class ForumThemeController {
       filter.setTerminationStatuses(statuses);
     }
 
-    var response = themeService.findThemesByFilter(filter);
+    GetThemesResponse response = themeService.findThemesByFilter(filter);
     if (response.getLength() == 0) {
       return ResponseEntity.noContent().build();
     } else {
@@ -139,7 +142,7 @@ public class ForumThemeController {
       @PathVariable(name = "themeId") Integer themeId,
       @RequestBody EditThemeRequest request
   ) {
-    var response = themeService.editTheme(userId, themeId, request);
+    EditThemeResponse response = themeService.editTheme(userId, themeId, request);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getTheme());
@@ -172,7 +175,7 @@ public class ForumThemeController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    var response = themeService.terminateTheme(userId, themeId, status);
+    TerminateThemeResponse response = themeService.terminateTheme(userId, themeId, status);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response);

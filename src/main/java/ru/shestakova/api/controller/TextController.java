@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.shestakova.api.model.text.BankText;
 import ru.shestakova.api.request.text.CreateTextRequest;
 import ru.shestakova.api.request.text.EditTextRequest;
+import ru.shestakova.api.response.text.CreateTextResponse;
+import ru.shestakova.api.response.text.DeleteTextResponse;
+import ru.shestakova.api.response.text.EditTextResponse;
 import ru.shestakova.api.response.text.GetTextsResponse;
 import ru.shestakova.api.service.TextService;
 
@@ -28,7 +31,7 @@ public class TextController {
       @RequestAttribute("UserId") Long userId,
       @RequestBody CreateTextRequest request
   ) {
-    var response = textService.createText(userId, request);
+    CreateTextResponse response = textService.createText(userId, request);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getText());
@@ -57,7 +60,7 @@ public class TextController {
       @PathVariable(name = "textId") Integer textId,
       @RequestBody EditTextRequest request
   ) {
-    var response = textService.editText(userId, textId, request);
+    EditTextResponse response = textService.editText(userId, textId, request);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getText());
@@ -74,7 +77,7 @@ public class TextController {
       @RequestAttribute("UserId") Long userId,
       @PathVariable(name = "textId") Integer textId
   ) {
-    var response = textService.deleteText(userId, textId);
+    DeleteTextResponse response = textService.deleteText(userId, textId);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getText());

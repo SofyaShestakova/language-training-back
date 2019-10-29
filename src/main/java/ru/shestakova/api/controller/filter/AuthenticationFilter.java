@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.shestakova.api.configuration.AuthenticationProperties;
+import ru.shestakova.api.response.user.AuthenticationResponse;
 import ru.shestakova.api.service.AuthenticationService;
 
 import javax.annotation.PostConstruct;
@@ -19,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -40,11 +42,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     this.patterns = ArrayListMultimap.create();
 
     for (String entry : properties.getPatterns()) {
-      if (entry.isBlank()) {
+      if (entry.isEmpty()) {
         continue;
       }
 
-      entry = entry.strip();
+      entry = entry.trim();
       String[] entryArray = entry.split(" ");
       if (entryArray.length != 2) {
         throw new IllegalArgumentException("Wrong entry: " + entry);
@@ -71,11 +73,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
       return;
     }
 
-    var method = HttpMethod.resolve(request.getMethod());
-    var patternList = patterns.get(method);
+    HttpMethod method = HttpMethod.resolve(request.getMethod());
+    List<Pattern> patternList = patterns.get(method);
 
     boolean hasMatches = false;
-    for (var pattern : patternList) {
+    for (Pattern pattern : patternList) {
       hasMatches |= pattern.matcher(request.getRequestURI()).matches();
     }
 
@@ -99,8 +101,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     } else if (!request.getHeader("Authorization").contains("Bearer ")) {
       response.setStatus(HttpStatus.UNAUTHORIZED.value());
     } else {
-      var username = request.getHeader("Username");
-      var tokenStr = request.getHeader("Authorization").split(" ")[1];
+      String username = request.getHeader("Username");
+      String tokenStr = request.getHeader("Authorization").split(" ")[1];
 
       UUID token;
       try {
@@ -110,7 +112,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         return;
       }
 
-      var authResponse = authService.authenticateUserByToken(username, token);
+      AuthenticationResponse authResponse = authService.authenticateUserByToken(username, token);
       if (authResponse.getStatus().isSuccess()) {
         request.setAttribute("UserId", authResponse.getUserId());
         chain.doFilter(request, response);

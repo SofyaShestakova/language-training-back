@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.shestakova.api.model.text.TextWork;
 import ru.shestakova.api.request.text.CreateWorkRequest;
 import ru.shestakova.api.request.text.EditWorkRequest;
+import ru.shestakova.api.response.text.CreateWorkResponse;
+import ru.shestakova.api.response.text.DeleteWorkResponse;
+import ru.shestakova.api.response.text.EditWorkResponse;
 import ru.shestakova.api.response.text.GetWorksResponse;
 import ru.shestakova.api.service.TextWorkService;
 
@@ -28,7 +31,8 @@ public class TextWorkController {
       @RequestAttribute("UserId") Long userId,
       @RequestBody CreateWorkRequest request
   ) {
-    var response = workService.createWork(userId, request);
+    CreateWorkResponse response;
+    response = workService.createWork(userId, request);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getWork());
@@ -59,7 +63,7 @@ public class TextWorkController {
       @RequestAttribute("UserId") Long userId,
       @PathVariable(name = "workId") Long workId,
       @RequestBody EditWorkRequest request) {
-    var response = workService.editWork(userId, workId, request);
+    EditWorkResponse response = workService.editWork(userId, workId, request);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getWork());
@@ -76,7 +80,7 @@ public class TextWorkController {
       @RequestAttribute("UserId") Long userId,
       @PathVariable(name = "workId") Long workId
   ) {
-    var response = workService.deleteWork(userId, workId);
+    DeleteWorkResponse response = workService.deleteWork(userId, workId);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getWork());

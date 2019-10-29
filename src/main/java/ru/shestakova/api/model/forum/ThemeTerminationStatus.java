@@ -33,7 +33,8 @@ public enum ThemeTerminationStatus {
   }
 
   public static ThemeTerminationStatus fromNumeric(int value) {
-    var status = numericToStatus.get(value);
+    ThemeTerminationStatus status;
+    status = numericToStatus.get(value);
     if (status == null) {
       throw new IllegalArgumentException("Unknown termination status: " + value);
     } else {

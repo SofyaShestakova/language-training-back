@@ -149,10 +149,10 @@ class Mappers {
         .setMarks(filter.getMarks() == null
             ? Stream.of(AssessmentMark.values())
                     .map(AssessmentMark::getValue)
-                    .collect(Collectors.toUnmodifiableList())
+                    .collect(Collectors.toList())
             : filter.getMarks().stream()
                     .map(AssessmentMark::getValue)
-                    .collect(Collectors.toUnmodifiableList())
+                    .collect(Collectors.toList())
         )
         .setCreatedFrom(filter.getCreatedFrom() == null ? null
             : filter.getCreatedFrom().toEpochMilli())
@@ -188,10 +188,10 @@ class Mappers {
             filter.getWorkTypes() == null
                 ? Stream.of(WorkType.values())
                         .map(WorkType::getValue)
-                        .collect(Collectors.toUnmodifiableList())
+                        .collect(Collectors.toList())
                 : filter.getWorkTypes().stream()
                         .map(WorkType::getValue)
-                        .collect(Collectors.toUnmodifiableList())
+                        .collect(Collectors.toList())
         )
         .setRatingFrom(filter.getRatingFrom())
         .setRatingTo(filter.getRatingTo())

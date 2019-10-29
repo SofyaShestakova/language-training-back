@@ -30,7 +30,8 @@ public enum MessageTerminationStatus {
       );
 
   public static MessageTerminationStatus fromNumeric(int value) {
-    var status = numericToStatus.get(value);
+    MessageTerminationStatus status;
+    status = numericToStatus.get(value);
     if (status == null) {
       throw new IllegalArgumentException("Unknown termination status: " + value);
     } else {

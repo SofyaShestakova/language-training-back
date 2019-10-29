@@ -135,7 +135,7 @@ public enum UserRole {
       ));
 
   public static UserRole fromId(String value) {
-    value = value.toLowerCase().strip();
+    value = value.toLowerCase().trim();
     if (!numericToRole.containsKey(value)) {
       throw new IllegalArgumentException("Unknown role id: " + value);
     } else {

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.shestakova.api.model.text.Assessment;
 import ru.shestakova.api.request.text.CreateAssessmentRequest;
 import ru.shestakova.api.request.text.EditAssessmentRequest;
+import ru.shestakova.api.response.text.CreateAssessmentResponse;
+import ru.shestakova.api.response.text.DeleteAssessmentResponse;
+import ru.shestakova.api.response.text.EditAssessmentResponse;
 import ru.shestakova.api.response.text.GetAssessmentsResponse;
 import ru.shestakova.api.service.AssessmentService;
 
@@ -27,7 +30,7 @@ public class AssessmentController {
       @RequestAttribute("UserId") Long userId,
       @RequestBody CreateAssessmentRequest request
   ) {
-    var response = assessmentService.createAssessment(userId, request);
+    CreateAssessmentResponse response = assessmentService.createAssessment(userId, request);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getAssessment());
@@ -60,7 +63,7 @@ public class AssessmentController {
       @RequestAttribute("UserId") Long userId,
       @PathVariable("assessmentId") Long assessmentId,
       @RequestBody EditAssessmentRequest request) {
-    var response = assessmentService.editAssessment(userId, assessmentId, request);
+    EditAssessmentResponse response = assessmentService.editAssessment(userId, assessmentId, request);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getAssessment());
@@ -77,7 +80,7 @@ public class AssessmentController {
       @RequestAttribute("UserId") Long userId,
       @PathVariable("assessmentId") Long assessmentId
   ) {
-    var response = assessmentService.deleteAssessment(userId, assessmentId);
+    DeleteAssessmentResponse response = assessmentService.deleteAssessment(userId, assessmentId);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getAssessment());

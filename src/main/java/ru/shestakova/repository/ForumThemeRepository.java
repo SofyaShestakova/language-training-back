@@ -1,6 +1,8 @@
 package ru.shestakova.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -20,8 +22,8 @@ public interface ForumThemeRepository extends JpaRepository<ForumTheme, Integer>
   List<ForumTheme> findAllByAuthorUserId(Long userId);
 
   default List<ForumTheme> findThemesByFilter(ForumThemeFilter filter) {
-    var theme = QForumTheme.forumTheme;
-    var expression = Expressions.asBoolean(true).isTrue();
+    QForumTheme theme = QForumTheme.forumTheme;
+    BooleanExpression expression = Expressions.asBoolean(true).isTrue();
 
     if(filter.getAuthorId() != null) {
       expression = expression.and(theme.author.userId.eq(filter.getAuthorId()));
@@ -65,9 +67,9 @@ public interface ForumThemeRepository extends JpaRepository<ForumTheme, Integer>
 
     int pageIndex = filter.getFrom() / pageSize();
     int skip = filter.getFrom() % pageSize();
-    var page = findAll(expression, PageRequest.of(pageIndex, pageSize()));
+    Page<ForumTheme> page = findAll(expression, PageRequest.of(pageIndex, pageSize()));
 
-    var content = page.getContent();
+    List<ForumTheme> content = page.getContent();
     return content.subList(skip, content.size());
   }
 }

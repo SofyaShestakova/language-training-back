@@ -6,7 +6,10 @@ import org.springframework.stereotype.Service;
 import ru.shestakova.api.response.user.GetDetailedUserResponse;
 import ru.shestakova.api.response.user.GetServiceUserResponse;
 import ru.shestakova.api.service.UserService;
+import ru.shestakova.model.ServiceUser;
 import ru.shestakova.repository.ServiceUserRepository;
+
+import java.util.Optional;
 
 import static ru.shestakova.api.service.impl.Mappers.mapFrom;
 
@@ -18,8 +21,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public GetServiceUserResponse getServiceUser(Long userId) {
-    var optional = userRepository.findById(userId);
-    if (optional.isEmpty()) {
+    Optional<ServiceUser> optional;
+    optional = userRepository.findById(userId);
+    if (optional.isPresent()) {
       return new GetServiceUserResponse().setStatus(GetServiceUserResponse.Status.USER_NOT_FOUND);
     } else {
       return new GetServiceUserResponse()
@@ -29,8 +33,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override public GetServiceUserResponse getServiceUser(String username) {
-    var optional = userRepository.findByUsername(username);
-    if (optional.isEmpty()) {
+    Optional<ServiceUser> optional = userRepository.findByUsername(username);
+    if (optional.isPresent()) {
       return new GetServiceUserResponse().setStatus(GetServiceUserResponse.Status.USER_NOT_FOUND);
     } else {
       return new GetServiceUserResponse()
@@ -40,8 +44,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override public GetDetailedUserResponse getDetailedUser(Long userId) {
-    var optional = userRepository.findById(userId);
-    if (optional.isEmpty()) {
+    Optional<ServiceUser> optional = userRepository.findById(userId);
+    if (optional.isPresent()) {
       return new GetDetailedUserResponse().setStatus(GetDetailedUserResponse.Status.USER_NOT_FOUND);
     } else {
       return new GetDetailedUserResponse()
@@ -52,8 +56,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override public GetDetailedUserResponse getDetailedUser(String username) {
-    var optional = userRepository.findByUsername(username);
-    if (optional.isEmpty()) {
+    Optional<ServiceUser> optional = userRepository.findByUsername(username);
+    if (optional.isPresent()) {
       return new GetDetailedUserResponse().setStatus(GetDetailedUserResponse.Status.USER_NOT_FOUND);
     } else {
       return new GetDetailedUserResponse()

@@ -13,9 +13,11 @@ import ru.shestakova.api.response.text.EditTextResponse;
 import ru.shestakova.api.response.text.GetTextsResponse;
 import ru.shestakova.api.service.TextService;
 import ru.shestakova.api.service.exception.PermissionException;
+import ru.shestakova.model.ServiceUser;
 import ru.shestakova.repository.BankTextRepository;
 import ru.shestakova.repository.ServiceUserRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,19 +31,19 @@ public class TextServiceImpl implements TextService {
   private BankTextRepository textRepository;
 
   @Override public CreateTextResponse createText(Long initiatorId, CreateTextRequest request) {
-    var userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
+    if (!userOptional.isPresent()) {
       return new CreateTextResponse().setStatus(CreateTextResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    var user = userOptional.get();
-    var userRole = UserRole.fromId(user.getRole());
+    ServiceUser user = userOptional.get();
+    UserRole userRole = UserRole.fromId(user.getRole());
 
     if (!userRole.isCanCreateTexts()) {
       throw new PermissionException();
     }
 
-    var text = textRepository.save(
+    ru.shestakova.model.BankText text = textRepository.save(
         new ru.shestakova.model.BankText()
             .setTitle(request.getTitle())
             .setText(request.getText())
@@ -58,10 +60,10 @@ public class TextServiceImpl implements TextService {
   }
 
   @Override public GetTextsResponse findTextsByFilter(BankTextFilter filter) {
-    var texts = textRepository.findAllByFilter(mapFrom(filter))
+    List<BankText> texts = textRepository.findAllByFilter(mapFrom(filter))
                               .stream()
                               .map(Mappers::mapFrom)
-                              .collect(Collectors.toUnmodifiableList());
+                              .collect(Collectors.toList());
     return new GetTextsResponse()
         .setLength(texts.size())
         .setTexts(texts);
@@ -69,22 +71,22 @@ public class TextServiceImpl implements TextService {
 
   @Override
   public EditTextResponse editText(Long initiatorId, Integer textId, EditTextRequest request) {
-    var userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
+    if (!userOptional.isPresent()) {
       return new EditTextResponse().setStatus(EditTextResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    var textOptional = textRepository.findById(textId);
-    if (textOptional.isEmpty()) {
+    Optional<ru.shestakova.model.BankText> textOptional = textRepository.findById(textId);
+    if (!textOptional.isPresent()) {
       return new EditTextResponse().setStatus(EditTextResponse.Status.TEXT_NOT_FOUND);
     }
 
-    var user = userOptional.get();
-    var userRole = UserRole.fromId(user.getRole());
-    var text = textOptional.get();
+    ServiceUser user = userOptional.get();
+    UserRole userRole = UserRole.fromId(user.getRole());
+    ru.shestakova.model.BankText text = textOptional.get();
 
     if (!user.getUserId().equals(text.getAuthor().getUserId())) {
-      var otherRole = UserRole.fromId(text.getAuthor().getRole());
+      UserRole otherRole = UserRole.fromId(text.getAuthor().getRole());
       if (userRole.compare(otherRole) <= 0 || !userRole.isCanEditOthersTexts()) {
         throw new PermissionException();
       }
@@ -105,22 +107,22 @@ public class TextServiceImpl implements TextService {
   }
 
   @Override public DeleteTextResponse deleteText(Long initiatorId, Integer textId) {
-    var userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isEmpty()) {
+    Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
+    if (!userOptional.isPresent()) {
       return new DeleteTextResponse().setStatus(DeleteTextResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    var textOptional = textRepository.findById(textId);
-    if (textOptional.isEmpty()) {
+    Optional<ru.shestakova.model.BankText> textOptional = textRepository.findById(textId);
+    if (!textOptional.isPresent()) {
       return new DeleteTextResponse().setStatus(DeleteTextResponse.Status.TEXT_NOT_FOUND);
     }
 
-    var user = userOptional.get();
-    var userRole = UserRole.fromId(user.getRole());
-    var text = textOptional.get();
+    ServiceUser user = userOptional.get();
+    UserRole userRole = UserRole.fromId(user.getRole());
+    ru.shestakova.model.BankText text = textOptional.get();
 
     if (!user.getUserId().equals(text.getAuthor().getUserId())) {
-      var otherRole = UserRole.fromId(text.getAuthor().getRole());
+      UserRole otherRole = UserRole.fromId(text.getAuthor().getRole());
       if (userRole.compare(otherRole) <= 0 || !userRole.isCanDeleteOtherTexts()) {
         throw new PermissionException();
       }
