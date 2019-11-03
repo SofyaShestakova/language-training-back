@@ -30,7 +30,7 @@ public enum UserRole {
 
       false, false,
 
-      false, false, false,
+      true  , true  , true  ,
 
       false, false
   ),

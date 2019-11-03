@@ -1,18 +1,24 @@
 
 ##Запрос авторизации пользователя
-GET http://localhost:8180/auth
+GET http://localhost:6932/auth
 Content-Type: application/json;charset=UTF-8
-Username: pavel
-Password: 123456
-
-{}
+Username: sofya
+Password: 2281488
 ###
 
-
-
-GET http://localhost:8082/forum/topics
+##Зарегистрировать юзера
+POST http://localhost:6932/auth
 Content-Type: application/json
-UserId: 2
+
+{
+   "username": "sofya",
+   "password": "2281488"
+}
+###
+
+GET http://localhost:6932/forum/topics
+Content-Type: application/json
+UserId: 1
 
 {
   "themeName": "asdas",
@@ -20,9 +26,20 @@ UserId: 2
 }
 ###
 
-GET http://localhost:8180/works/topics
+GET http://localhost:6932/works/2
 Content-Type: application/json
-UserId: 2
+
+###
+
+
+GET http://localhost:6932/texts/1
+
+###
+
+
+POST http://localhost:6932/forum/topics
+Content-Type: application/json
+Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
 
 {
   "themeName": "asdas",
@@ -30,24 +47,9 @@ UserId: 2
 }
 ###
 
-
-GET http://localhost:8180/texts/1
-
-###
-
-
-POST http://localhost:8082/forum/topics
+POST http://localhost:6932/texts
 Content-Type: application/json
-
-{
-  "themeName": "asdas",
-  "text": "sadas"
-}
-###
-
-POST http://localhost:8180/texts
-Content-Type: application/json
-username: pavel
+Username: sofya
 Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
 
 {
@@ -57,9 +59,9 @@ Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
 ###
 
 
-POST http://localhost:8180/assessments
+POST http://localhost:6932/assessments
 Content-Type: application/json
-username: pavel
+Username: sofya
 Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
 
 {
@@ -69,9 +71,8 @@ Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
 ###
 
 ## Рабочий запрос добавляющий работу
-POST http://localhost:12500/works
+POST http://localhost:6932/works
 Content-Type: application/json
-Username: pavel
 Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
 
 {
@@ -79,5 +80,20 @@ Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
   "type": "0",
   "title": "title of the work",
   "text": "text of the wor"
+}
+###
+
+GET http://localhost:6932/users/sofya/details
+Content-Type: application/json
+
+###
+
+PATCH http://localhost:6932/users/sofya
+Content-Type: application/json
+Authorization: Bearer e1e71142-f2e5-11e9-a902-04d3b0aac206
+
+{
+  "bio": "Я Софья Шестакова",
+  "screenName": "Софья Шестакова Александровна"
 }
 ###

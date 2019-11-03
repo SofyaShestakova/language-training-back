@@ -18,7 +18,7 @@ public class ServiceUser {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "UserId", unique = true, nullable = false, updatable = false, insertable = false)
+  @Column(name = "UserId", unique = true, nullable = false, updatable = false)
   Long userId;
 
   @Column(name = "Username", unique = true, nullable = false, columnDefinition = "VARCHAR(40)")

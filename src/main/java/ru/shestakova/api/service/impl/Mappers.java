@@ -14,9 +14,9 @@ import ru.shestakova.api.model.user.UserRole;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class Mappers {
+public class Mappers {
 
-  static ForumTheme mapFrom(ru.shestakova.model.ForumTheme theme) {
+  public static ForumTheme mapFrom(ru.shestakova.model.ForumTheme theme) {
     return new ForumTheme()
         .setThemeId(theme.getThemeId())
         .setAuthorId(theme.getAuthor().getUserId())
@@ -31,7 +31,7 @@ class Mappers {
         .setCloseDate(theme.getCloseDate());
   }
 
-  static ForumMessage mapFrom(ru.shestakova.model.ForumMessage message) {
+  public static ForumMessage mapFrom(ru.shestakova.model.ForumMessage message) {
     return new ForumMessage()
         .setMessageId(message.getMessageId())
         .setThemeId(message.getTheme().getThemeId())
@@ -43,7 +43,7 @@ class Mappers {
         .setDeleteDate(message.getDeleteDate());
   }
 
-  static ServiceUser mapFrom(ru.shestakova.model.ServiceUser user) {
+  public static ServiceUser mapFrom(ru.shestakova.model.ServiceUser user) {
     return new ServiceUser()
         .setUserId(user.getUserId())
         .setUsername(user.getUsername())
@@ -52,9 +52,12 @@ class Mappers {
         .setRole(UserRole.fromId(user.getRole()));
   }
 
-  static UserDetails mapFrom(ru.shestakova.model.UserDetails details) {
-    return new UserDetails()
-        .setLevel(UserLevel.fromNumeric(details.getLevelCode()))
+  public static UserDetails mapFrom(ru.shestakova.model.UserDetails details) {
+    UserDetails detail = new UserDetails();
+    if(details.getLevelCode() != null) {
+      detail.setLevel(UserLevel.fromNumeric(details.getLevelCode()));
+    }
+    return detail
         .setScreenName(details.getScreenName())
         .setRating(details.getRating())
         .setBio(details.getBio())
@@ -62,7 +65,7 @@ class Mappers {
         .setCreateDate(details.getCreateDate());
   }
 
-  static Assessment mapFrom(ru.shestakova.model.Assessment assessment) {
+  public static Assessment mapFrom(ru.shestakova.model.Assessment assessment) {
     return new Assessment()
         .setAssessmentId(assessment.getAssessmentId())
         .setWorkId(assessment.getWork().getWorkId())
@@ -73,7 +76,7 @@ class Mappers {
         .setCreateDate(assessment.getCreateDate());
   }
 
-  static BankText mapFrom(ru.shestakova.model.BankText text) {
+  public static BankText mapFrom(ru.shestakova.model.BankText text) {
     return new BankText()
         .setTextId(text.getTextId())
         .setTitle(text.getTitle())
@@ -83,7 +86,7 @@ class Mappers {
         .setCreateDate(text.getCreateDate());
   }
 
-  static TextWork mapFrom(ru.shestakova.model.TextWork work) {
+  public static TextWork mapFrom(ru.shestakova.model.TextWork work) {
     return new TextWork()
         .setWorkId(work.getWorkId())
         .setTitle(work.getWorkTitle())
@@ -94,7 +97,7 @@ class Mappers {
         .setCreateDate(work.getCreateDate());
   }
 
-  static ru.shestakova.repository.filter.ForumThemeFilter mapFrom(ForumThemeFilter filter) {
+  public static ru.shestakova.repository.filter.ForumThemeFilter mapFrom(ForumThemeFilter filter) {
     return new ru.shestakova.repository.filter.ForumThemeFilter()
         .setAuthorId(filter.getAuthorId())
         .setFrom(filter.getFrom())
@@ -118,7 +121,7 @@ class Mappers {
         );
   }
 
-  static ru.shestakova.repository.filter.ForumMessageFilter mapFrom(
+  public static ru.shestakova.repository.filter.ForumMessageFilter mapFrom(
       ForumMessageFilter filter) {
     return new ru.shestakova.repository.filter.ForumMessageFilter()
         .setThemeId(filter.getThemeId())
@@ -141,7 +144,7 @@ class Mappers {
         );
   }
 
-  static ru.shestakova.repository.filter.AssessmentFilter mapFrom(AssessmentFilter filter) {
+  public static ru.shestakova.repository.filter.AssessmentFilter mapFrom(AssessmentFilter filter) {
     return new ru.shestakova.repository.filter.AssessmentFilter()
         .setFrom(filter.getFrom())
         .setCount(filter.getCount())
@@ -164,7 +167,7 @@ class Mappers {
             : filter.getEditedTo().toEpochMilli());
   }
 
-  static ru.shestakova.repository.filter.BankTextFilter mapFrom(BankTextFilter filter) {
+  public static ru.shestakova.repository.filter.BankTextFilter mapFrom(BankTextFilter filter) {
     return new ru.shestakova.repository.filter.BankTextFilter()
         .setFrom(filter.getFrom())
         .setCount(filter.getCount())
@@ -178,7 +181,7 @@ class Mappers {
             : filter.getEditedTo().toEpochMilli());
   }
 
-  static ru.shestakova.repository.filter.TextWorkFilter mapFrom(TextWorkFilter filter) {
+  public static ru.shestakova.repository.filter.TextWorkFilter mapFrom(TextWorkFilter filter) {
     return new ru.shestakova.repository.filter.TextWorkFilter()
         .setFrom(filter.getFrom())
         .setCount(filter.getCount())

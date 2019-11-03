@@ -88,7 +88,6 @@ public class ForumThemeServiceImpl implements ForumThemeService {
     List<ForumTheme> themes = themeRepository.findThemesByFilter(mapFrom(filter)).stream()
                                 .map(Mappers::mapFrom)
                                 .collect(Collectors.toList());
-
     return new GetThemesResponse()
         .setLength(themes.size())
         .setThemes(themes);

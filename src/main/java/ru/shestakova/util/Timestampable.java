@@ -24,7 +24,7 @@ public abstract class Timestampable implements Serializable {
 
   @Version
   @Column(name = "Version")
-  Integer version;
+  Integer version = 0;
 
   public void update() {
     updatedAt();

@@ -12,20 +12,23 @@ import java.util.Arrays;
 import java.util.List;
 
 @ConfigurationProperties(value = "api.auth")
-@Data @Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor @AllArgsConstructor
+@Data
+@Accessors(chain = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class AuthenticationProperties {
 
   private Boolean whitelistMode = Boolean.TRUE;
   private List<String> patterns = Arrays.asList(
       "POST /forum/topics",
       "POST,PATCH,DELETE /texts",
-          "POST,PATCH,DELETE /works",
+      "POST,PATCH,DELETE /works",
       "PATCH /forum/topics/[0-9]+",
       "POST,DELETE /forum/topics/[0-9]+/[a-zA-Z]+",
       "POST /forum/messages/[0-9]+",
       "PATCH /forum/messages/[0-9]+/[0-9]+",
       "DELETE /forum/messages/[0-9]+/[0-9]+/delete",
-      "* /users"
+      "PATCH /users"
   );
 }
