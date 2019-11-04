@@ -23,8 +23,8 @@ import java.util.List;
 @RestController
 @RequestMapping(
     value = "/forum/topics",
-    consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-    produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE
 )
 @AllArgsConstructor
 @CrossOrigin

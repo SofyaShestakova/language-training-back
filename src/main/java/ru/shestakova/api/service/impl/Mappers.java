@@ -54,7 +54,7 @@ public class Mappers {
 
   public static UserDetails mapFrom(ru.shestakova.model.UserDetails details) {
     UserDetails detail = new UserDetails();
-    if(details.getLevelCode() != null) {
+    if (details.getLevelCode() != null) {
       detail.setLevel(UserLevel.fromNumeric(details.getLevelCode()));
     }
     return detail
@@ -117,8 +117,8 @@ public class Mappers {
         .setTotalMessagesTo(filter.getTotalMessagesTo())
         .setTerminationStatuses(
             filter.getTerminationStatuses().stream()
-                  .map(ThemeTerminationStatus::getValue)
-                  .collect(Collectors.toList())
+                .map(ThemeTerminationStatus::getValue)
+                .collect(Collectors.toList())
         );
   }
 
@@ -140,8 +140,8 @@ public class Mappers {
         .setDeletedTo(filter.getDeletedTo() == null ? null : filter.getDeletedTo().toEpochMilli())
         .setTerminationStatuses(
             filter.getTerminationStatuses().stream()
-                  .map(MessageTerminationStatus::getValue)
-                  .collect(Collectors.toList())
+                .map(MessageTerminationStatus::getValue)
+                .collect(Collectors.toList())
         );
   }
 
@@ -152,11 +152,11 @@ public class Mappers {
         .setExpertId(filter.getExpertId())
         .setMarks(filter.getMarks() == null
             ? Stream.of(AssessmentMark.values())
-                    .map(AssessmentMark::getValue)
-                    .collect(Collectors.toList())
+            .map(AssessmentMark::getValue)
+            .collect(Collectors.toList())
             : filter.getMarks().stream()
-                    .map(AssessmentMark::getValue)
-                    .collect(Collectors.toList())
+                .map(AssessmentMark::getValue)
+                .collect(Collectors.toList())
         )
         .setCreatedFrom(filter.getCreatedFrom() == null ? null
             : filter.getCreatedFrom().toEpochMilli())
@@ -172,14 +172,10 @@ public class Mappers {
     return new ru.shestakova.repository.filter.BankTextFilter()
         .setFrom(filter.getFrom())
         .setCount(filter.getCount())
-        .setCreatedFrom(filter.getCreatedFrom() == null ? null
-            : filter.getCreatedFrom().toEpochMilli())
-        .setCreatedTo(filter.getCreatedTo() == null ? null
-            : filter.getCreatedTo().toEpochMilli())
-        .setEditedFrom(filter.getEditedFrom() == null ? null
-            : filter.getEditedFrom().toEpochMilli())
-        .setEditedTo(filter.getEditedTo() == null ? null
-            : filter.getEditedTo().toEpochMilli());
+        .setCreatedFrom(filter.getCreatedFrom())
+        .setCreatedTo(filter.getCreatedTo())
+        .setEditedFrom(filter.getEditedFrom())
+        .setEditedTo(filter.getEditedTo());
   }
 
   public static ru.shestakova.repository.filter.TextWorkFilter mapFrom(TextWorkFilter filter) {
@@ -191,21 +187,20 @@ public class Mappers {
         .setWorkTypes(
             filter.getWorkTypes() == null
                 ? Stream.of(WorkType.values())
-                        .map(WorkType::getValue)
-                        .collect(Collectors.toList())
+                .map(WorkType::getValue)
+                .collect(Collectors.toList())
                 : filter.getWorkTypes().stream()
-                        .map(WorkType::getValue)
-                        .collect(Collectors.toList())
+                    .map(WorkType::getValue)
+                    .collect(Collectors.toList())
         )
         .setRatingFrom(filter.getRatingFrom())
         .setRatingTo(filter.getRatingTo())
-        .setCreatedFrom(filter.getCreatedFrom() == null ? null
-            : filter.getCreatedFrom().toEpochMilli())
-        .setCreatedTo(filter.getCreatedTo() == null ? null
-            : filter.getCreatedTo().toEpochMilli())
-        .setEditedFrom(filter.getEditedFrom() == null ? null
-            : filter.getEditedFrom().toEpochMilli())
-        .setEditedTo(filter.getEditedTo() == null ? null
-            : filter.getEditedTo().toEpochMilli());
+        .setCreatedFrom(filter.getCreatedFrom())
+        .setCreatedTo(filter.getCreatedTo())
+        .setEditedFrom(filter.getEditedFrom())
+        .setEditedTo(filter.getEditedTo())
+        .setSort(
+            ru.shestakova.repository.filter.TextWorkFilter.Sort.valueOf(filter.getSort().name())
+        );
   }
 }

@@ -17,9 +17,9 @@ public class BankTextFilter {
   Integer from = 0;
   Integer count = 50;
 
-  Instant createdFrom = Instant.now().minus(Duration.ofDays(7));
-  Instant createdTo = Instant.now();
+  Long createdFrom = Instant.now().minus(Duration.ofDays(7)).toEpochMilli();
+  Long createdTo = Instant.now().toEpochMilli();
 
-  Instant editedFrom;
-  Instant editedTo = Instant.now();
+  Long editedFrom;
+  Long editedTo = Instant.now().toEpochMilli();
 }

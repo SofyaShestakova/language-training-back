@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.shestakova.api.model.filter.AssessmentFilter;
 import ru.shestakova.api.model.text.Assessment;
 import ru.shestakova.api.request.text.CreateAssessmentRequest;
 import ru.shestakova.api.request.text.EditAssessmentRequest;
@@ -17,8 +18,8 @@ import ru.shestakova.api.service.AssessmentService;
 @RestController
 @RequestMapping(
     path = "/assessments",
-    consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-    produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE
 )
 @AllArgsConstructor
 public class AssessmentController {
@@ -47,15 +48,20 @@ public class AssessmentController {
   @GetMapping(path = "{assessmentId}", consumes = MediaType.ALL_VALUE)
   ResponseEntity<Assessment> findAssessmentById(@PathVariable("assessmentId") Long assessmentId) {
     return assessmentService.findAssessmentById(assessmentId)
-                            .map(ResponseEntity::ok)
-                            .orElse(ResponseEntity.notFound().build());
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
   }
 
   @GetMapping(consumes = MediaType.ALL_VALUE)
   ResponseEntity<GetAssessmentsResponse> findAssessmentsByFilter(
-
+      @RequestBody AssessmentFilter filter
   ) {
-    return ResponseEntity.badRequest().build();
+    GetAssessmentsResponse response = assessmentService.findAssessmentsByFilter(filter);
+    if (response.getLength() == 0) {
+      return ResponseEntity.noContent().build();
+    } else {
+      return ResponseEntity.ok(response);
+    }
   }
 
   @PatchMapping(path = "{assessmentId}")
@@ -63,7 +69,8 @@ public class AssessmentController {
       @RequestAttribute("UserId") Long userId,
       @PathVariable("assessmentId") Long assessmentId,
       @RequestBody EditAssessmentRequest request) {
-    EditAssessmentResponse response = assessmentService.editAssessment(userId, assessmentId, request);
+    EditAssessmentResponse response = assessmentService
+        .editAssessment(userId, assessmentId, request);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getAssessment());

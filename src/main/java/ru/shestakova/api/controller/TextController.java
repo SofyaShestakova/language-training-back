@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.shestakova.api.model.filter.BankTextFilter;
 import ru.shestakova.api.model.text.BankText;
 import ru.shestakova.api.request.text.CreateTextRequest;
 import ru.shestakova.api.request.text.EditTextRequest;
@@ -17,8 +18,8 @@ import ru.shestakova.api.service.TextService;
 @RestController
 @RequestMapping(
     path = "/texts",
-    consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-    produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE
 )
 @AllArgsConstructor
 @CrossOrigin
@@ -50,8 +51,13 @@ public class TextController {
   }
 
   @GetMapping(consumes = MediaType.ALL_VALUE)
-  ResponseEntity<GetTextsResponse> findTextsByFilter() {
-    return ResponseEntity.badRequest().build();
+  ResponseEntity<GetTextsResponse> findTextsByFilter(@RequestBody BankTextFilter filter) {
+    GetTextsResponse response = textService.findTextsByFilter(filter);
+    if(response.getLength() == 0) {
+      return ResponseEntity.noContent().build();
+    } else {
+      return ResponseEntity.ok(response);
+    }
   }
 
   @PatchMapping(path = "{textId}")

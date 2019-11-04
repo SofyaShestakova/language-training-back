@@ -29,4 +29,14 @@ public class TextWorkFilter {
 
   Long editedFrom;
   Long editedTo;
+
+  Sort sort;
+
+  public enum Sort {
+    RATING_ASCENDING,
+    RATING_DESCENDING,
+    AUTHOR_ID,
+    NEWEST,
+    OLDEST
+  }
 }

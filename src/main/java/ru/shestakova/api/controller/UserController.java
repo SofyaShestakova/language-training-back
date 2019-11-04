@@ -1,7 +1,5 @@
 package ru.shestakova.api.controller;
 
-import static ru.shestakova.api.service.impl.Mappers.mapFrom;
-
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,15 +13,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.shestakova.api.model.user.UserDetails;
-import ru.shestakova.api.response.user.GetDetailedUserResponse;
 import ru.shestakova.api.response.user.DetailsPatchResponse;
+import ru.shestakova.api.response.user.GetDetailedUserResponse;
 import ru.shestakova.api.service.UserService;
 
 @RestController
 @RequestMapping(
     path = "/users",
-    consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-    produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE
 )
 @AllArgsConstructor
 @CrossOrigin

@@ -24,6 +24,7 @@ public class AuthenticationProperties {
       "POST /forum/topics",
       "POST,PATCH,DELETE /texts",
       "POST,PATCH,DELETE /works",
+      "POST,PATCH,DELETE /assessments",
       "PATCH /forum/topics/[0-9]+",
       "POST,DELETE /forum/topics/[0-9]+/[a-zA-Z]+",
       "POST /forum/messages/[0-9]+",

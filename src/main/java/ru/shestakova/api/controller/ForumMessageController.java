@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(
     path = "/forum/messages",
-    consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-    produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE
 )
 @AllArgsConstructor
 @CrossOrigin

@@ -14,7 +14,7 @@ import ru.shestakova.api.service.AuthenticationService;
 @RestController
 @RequestMapping(
     path = "/auth",
-    produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    produces = MediaType.APPLICATION_JSON_VALUE
 )
 @AllArgsConstructor
 public class AuthenticationController {
@@ -39,7 +39,7 @@ public class AuthenticationController {
     }
   }
 
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<RegistrationResponse> registrarUser(
       @RequestBody RegistrationRequest request) {
     RegistrationResponse response = authService.registrarUser(request);
