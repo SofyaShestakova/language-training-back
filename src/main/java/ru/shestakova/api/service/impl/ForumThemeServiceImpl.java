@@ -40,7 +40,7 @@ public class ForumThemeServiceImpl implements ForumThemeService {
   @Transactional
   @Override public CreateThemeResponse createTheme(Long initiatorId, CreateThemeRequest request) {
     Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isPresent()) {
+    if (!userOptional.isPresent()) {
       return new CreateThemeResponse().setStatus(CreateThemeResponse.Status.INITIATOR_NOT_FOUND);
     }
 
@@ -97,12 +97,12 @@ public class ForumThemeServiceImpl implements ForumThemeService {
   @Transactional
   public EditThemeResponse editTheme(Long initiatorId, Integer themeId, EditThemeRequest request) {
     Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isPresent()) {
+    if (!userOptional.isPresent()) {
       return new EditThemeResponse().setStatus(EditThemeResponse.Status.INITIATOR_NOT_FOUND);
     }
 
     Optional<ru.shestakova.model.ForumTheme> themeOptional = themeRepository.findById(themeId);
-    if (themeOptional.isPresent()) {
+    if (!themeOptional.isPresent()) {
       return new EditThemeResponse().setStatus(EditThemeResponse.Status.THEME_NOT_FOUND);
     }
 
@@ -131,13 +131,13 @@ public class ForumThemeServiceImpl implements ForumThemeService {
   public TerminateThemeResponse terminateTheme(Long initiatorId, Integer themeId,
       ThemeTerminationStatus terminationStatus) {
     Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isPresent()) {
+    if (!userOptional.isPresent()) {
       return new TerminateThemeResponse()
           .setStatus(TerminateThemeResponse.Status.INITIATOR_NOT_FOUND);
     }
 
     Optional<ru.shestakova.model.ForumTheme> themeOptional = themeRepository.findById(themeId);
-    if (themeOptional.isPresent()) {
+    if (!themeOptional.isPresent()) {
       return new TerminateThemeResponse().setStatus(TerminateThemeResponse.Status.THEME_NOT_FOUND);
     }
 

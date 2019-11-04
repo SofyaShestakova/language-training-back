@@ -97,7 +97,7 @@ public class TextWorkServiceImpl implements TextWorkService {
   @Override
   public EditWorkResponse editWork(Long initiatorId, Long workId, EditWorkRequest request) {
     Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isPresent()) {
+    if (!userOptional.isPresent()) {
       return new EditWorkResponse().setStatus(EditWorkResponse.Status.INITIATOR_NOT_FOUND);
     }
 

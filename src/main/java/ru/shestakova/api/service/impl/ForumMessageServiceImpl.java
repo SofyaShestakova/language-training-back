@@ -48,7 +48,7 @@ public class ForumMessageServiceImpl implements ForumMessageService {
     }
 
     Optional<ForumTheme> themeOptional = themeRepository.findById(themeId);
-    if (themeOptional.isPresent()) {
+    if (!themeOptional.isPresent()) {
       return new CreateMessageResponse().setStatus(CreateMessageResponse.Status.THEME_NOT_FOUND);
     }
 
@@ -99,19 +99,19 @@ public class ForumMessageServiceImpl implements ForumMessageService {
   @Override
   public TerminateMessageResponse deleteMessage(Long initiatorId, Integer themeId, Long messageId) {
     Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isPresent()) {
+    if (!userOptional.isPresent()) {
       return new TerminateMessageResponse()
           .setStatus(TerminateMessageResponse.Status.INITIATOR_NOT_FOUND);
     }
 
     Optional<ForumTheme> themeOptional = themeRepository.findById(themeId);
-    if (themeOptional.isPresent()) {
+    if (!themeOptional.isPresent()) {
       return new TerminateMessageResponse()
           .setStatus(TerminateMessageResponse.Status.THEME_NOT_FOUND);
     }
 
     Optional<ru.shestakova.model.ForumMessage> messageOptional = messageRepository.findByMessageIdAndThemeThemeId(messageId, themeId);
-    if (messageOptional.isPresent()) {
+    if (!messageOptional.isPresent()) {
       return new TerminateMessageResponse()
           .setStatus(TerminateMessageResponse.Status.MESSAGE_NOT_FOUND);
     }
@@ -155,17 +155,17 @@ public class ForumMessageServiceImpl implements ForumMessageService {
   public EditMessageResponse editMessage(Long initiatorId, Integer themeId, Long messageId,
       String text) {
     Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
-    if (userOptional.isPresent()) {
+    if (!userOptional.isPresent()) {
       return new EditMessageResponse().setStatus(EditMessageResponse.Status.INITIATOR_NOT_FOUND);
     }
 
     Optional<ForumTheme> themeOptional = themeRepository.findById(themeId);
-    if (themeOptional.isPresent()) {
+    if (!themeOptional.isPresent()) {
       return new EditMessageResponse().setStatus(EditMessageResponse.Status.THEME_NOT_FOUND);
     }
 
     Optional<ru.shestakova.model.ForumMessage> messageOptional = messageRepository.findByMessageIdAndThemeThemeId(messageId, themeId);
-    if (messageOptional.isPresent()) {
+    if (!messageOptional.isPresent()) {
       return new EditMessageResponse().setStatus(EditMessageResponse.Status.MESSAGE_NOT_FOUND);
     }
 

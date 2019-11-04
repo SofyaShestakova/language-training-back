@@ -14,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 public class TextWork {
     Long workId;
     String title;
+    String text;
     Integer textId;
     Long authorId;
     WorkType type;

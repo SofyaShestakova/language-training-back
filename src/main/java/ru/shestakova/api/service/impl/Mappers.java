@@ -90,6 +90,7 @@ public class Mappers {
     return new TextWork()
         .setWorkId(work.getWorkId())
         .setTitle(work.getWorkTitle())
+        .setText(work.getWorkText())
         .setTextId(work.getText().getTextId())
         .setAuthorId(work.getAuthor().getUserId())
         .setType(WorkType.fromNumeric(work.getType()))
