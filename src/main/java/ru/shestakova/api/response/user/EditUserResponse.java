@@ -6,22 +6,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
+import ru.shestakova.api.model.user.UserDetails;
 
-import java.util.UUID;
-
-@Data @Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor @AllArgsConstructor
-public class AuthenticationResponse {
+@Data
+@Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
+public class EditUserResponse {
 
   Status status;
-  String username;
-  Long userId;
-  UUID token;
+  UserDetails details;
 
-  public enum Status {
+  public EditUserResponse(Status status) {
+    this.status = status;
+  }
+
+  public enum  Status {
     SUCCESS,
-    USER_NOT_FOUND,
-    WRONG_CREDENTIALS;
+    USER_NOT_FOUND;
 
     public boolean isSuccess() {
       return this == SUCCESS;

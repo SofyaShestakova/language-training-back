@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.shestakova.api.model.user.UserDetails;
-import ru.shestakova.api.response.user.DetailsPatchResponse;
+import ru.shestakova.api.request.EditUserRequest;
+import ru.shestakova.api.response.user.EditUserResponse;
 import ru.shestakova.api.response.user.GetDetailedUserResponse;
 import ru.shestakova.api.service.UserService;
 
 @RestController
 @RequestMapping(
     path = "/users",
-    consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE
 )
 @AllArgsConstructor
@@ -45,13 +45,12 @@ public class UserController {
     }
   }
 
-  @PatchMapping(path = "{username}")
-  public ResponseEntity<DetailsPatchResponse> editUser(
-      @PathVariable(name = "username") String username,
-      @RequestBody UserDetails details
+  @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<EditUserResponse> editUser(
+      @RequestAttribute("UserId") Long userId,
+      @RequestBody EditUserRequest request
   ) {
-
-    DetailsPatchResponse response = userService.patchUserDetails(username, details);
+    EditUserResponse response = userService.patchUserDetails(userId, request);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response);

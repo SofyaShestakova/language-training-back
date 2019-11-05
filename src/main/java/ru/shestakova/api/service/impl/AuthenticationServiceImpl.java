@@ -1,6 +1,10 @@
 package ru.shestakova.api.service.impl;
 
 
+import static ru.shestakova.api.service.impl.Mappers.mapFrom;
+
+import java.util.Optional;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +19,6 @@ import ru.shestakova.api.service.AuthenticationService;
 import ru.shestakova.model.ServiceUser;
 import ru.shestakova.model.UserDetails;
 import ru.shestakova.repository.ServiceUserRepository;
-
-import java.util.Optional;
-import java.util.UUID;
-
-import static ru.shestakova.api.service.impl.Mappers.mapFrom;
 
 @Service
 @AllArgsConstructor
@@ -87,6 +86,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     return new AuthenticationResponse()
         .setStatus(AuthenticationResponse.Status.SUCCESS)
+        .setUsername(username)
         .setToken(token)
         .setUserId(user.getUserId());
   }

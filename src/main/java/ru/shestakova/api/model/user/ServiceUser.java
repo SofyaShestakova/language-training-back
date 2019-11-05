@@ -15,7 +15,7 @@ public class ServiceUser {
     Long userId;
     String username;
     String email;
-    String avatarURL;
+    String avatarUrl;
     UserRole role;
 
 }

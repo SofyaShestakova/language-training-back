@@ -1,7 +1,7 @@
 package ru.shestakova.api.service;
 
-import ru.shestakova.api.model.user.UserDetails;
-import ru.shestakova.api.response.user.DetailsPatchResponse;
+import ru.shestakova.api.request.EditUserRequest;
+import ru.shestakova.api.response.user.EditUserResponse;
 import ru.shestakova.api.response.user.GetDetailedUserResponse;
 import ru.shestakova.api.response.user.GetServiceUserResponse;
 
@@ -15,5 +15,5 @@ public interface UserService {
 
   GetDetailedUserResponse getDetailedUser(String username);
 
-  DetailsPatchResponse patchUserDetails(String username, UserDetails details);
+  EditUserResponse patchUserDetails(Long userId, EditUserRequest details);
 }

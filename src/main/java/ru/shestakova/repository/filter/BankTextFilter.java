@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 
-@Data @Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor @AllArgsConstructor
+@Data
+@Accessors(chain = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class BankTextFilter {
 
   Integer from;
@@ -18,5 +21,5 @@ public class BankTextFilter {
   Long createdTo;
 
   Long editedFrom;
-  Long editedTo ;
+  Long editedTo;
 }

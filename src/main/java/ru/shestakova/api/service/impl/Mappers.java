@@ -48,7 +48,7 @@ public class Mappers {
         .setUserId(user.getUserId())
         .setUsername(user.getUsername())
         .setEmail(user.getEmail())
-        .setAvatarURL(user.getAvatarUrl())
+        .setAvatarUrl(user.getAvatarUrl())
         .setRole(UserRole.fromId(user.getRole()));
   }
 

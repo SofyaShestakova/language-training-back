@@ -78,7 +78,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     boolean hasMatches = false;
     for (Pattern pattern : patternList) {
-      hasMatches |= pattern.matcher(request.getRequestURI()).matches();
+      hasMatches = pattern.matcher(request.getRequestURI()).matches();
+      if(hasMatches) {
+        break;
+      }
     }
 
     if (isWhitelisted && !hasMatches) {

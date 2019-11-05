@@ -1,19 +1,18 @@
 package ru.shestakova.api.service.impl;
 
 
+import static ru.shestakova.api.service.impl.Mappers.mapFrom;
+
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.shestakova.api.model.user.UserDetails;
+import ru.shestakova.api.request.EditUserRequest;
+import ru.shestakova.api.response.user.EditUserResponse;
 import ru.shestakova.api.response.user.GetDetailedUserResponse;
 import ru.shestakova.api.response.user.GetServiceUserResponse;
-import ru.shestakova.api.response.user.DetailsPatchResponse;
 import ru.shestakova.api.service.UserService;
 import ru.shestakova.model.ServiceUser;
 import ru.shestakova.repository.ServiceUserRepository;
-
-import java.util.Optional;
-
-import static ru.shestakova.api.service.impl.Mappers.mapFrom;
 
 @Service
 @AllArgsConstructor
@@ -73,10 +72,10 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public DetailsPatchResponse patchUserDetails(String username, UserDetails details) {
-    Optional<ServiceUser> userOptional = userRepository.findByUsername(username);
+  public EditUserResponse patchUserDetails(Long userId, EditUserRequest request) {
+    Optional<ServiceUser> userOptional = userRepository.findById(userId);
     if (!userOptional.isPresent()) {
-      return new DetailsPatchResponse().setStatus(DetailsPatchResponse.Status.USER_NOT_FOUND);
+      return new EditUserResponse().setStatus(EditUserResponse.Status.USER_NOT_FOUND);
     }
 
     ServiceUser user = userOptional.get();
@@ -87,15 +86,15 @@ public class UserServiceImpl implements UserService {
             .setUser(user)
             .setLevelCode(repositoryDetails.getLevelCode())
             .setRating(repositoryDetails.getRating())
-            .setBio(details.getBio() != null ? details.getBio() : repositoryDetails.getBio())
-            .setScreenName(details.getScreenName() != null ? details.getScreenName()
+            .setBio(request.getBio() != null ? request.getBio() : repositoryDetails.getBio())
+            .setScreenName(request.getScreenName() != null ? request.getScreenName()
                 : repositoryDetails.getScreenName());
 
     user.setDetails(newUserDetails);
     userRepository.save(user);
 
-    return new DetailsPatchResponse()
-        .setStatus(DetailsPatchResponse.Status.SUCCESS)
+    return new EditUserResponse()
+        .setStatus(EditUserResponse.Status.SUCCESS)
         .setDetails(mapFrom(newUserDetails));
   }
 

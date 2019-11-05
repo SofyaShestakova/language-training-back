@@ -50,7 +50,7 @@ public class TextController {
                       .orElse(ResponseEntity.notFound().build());
   }
 
-  @GetMapping(consumes = MediaType.ALL_VALUE)
+  @PostMapping(path = "/filter", consumes = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<GetTextsResponse> findTextsByFilter(@RequestBody BankTextFilter filter) {
     GetTextsResponse response = textService.findTextsByFilter(filter);
     if(response.getLength() == 0) {

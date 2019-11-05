@@ -1,20 +1,24 @@
 package ru.shestakova.api.model.user;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.experimental.FieldDefaults;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
-@Getter
 @AllArgsConstructor @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum UserLevel {
   BEGINNER(0);
 
   int value;
+
+  @JsonValue
+  public int getValue() {
+    return value;
+  }
 
   private static Map<Integer, UserLevel> numericToValue =
       Stream.of(UserLevel.values()).collect(
@@ -24,6 +28,7 @@ public enum UserLevel {
           )
       );
 
+  @JsonCreator
   public static UserLevel fromNumeric(int value) {
     UserLevel level;
     level = numericToValue.get(value);

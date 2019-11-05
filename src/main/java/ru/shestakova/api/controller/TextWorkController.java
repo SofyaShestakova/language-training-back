@@ -63,7 +63,7 @@ public class TextWorkController {
         .orElse(ResponseEntity.notFound().build());
   }
 
-  @GetMapping
+  @PostMapping(path = "/filter")
   ResponseEntity<GetWorksResponse> findWorksByFilter(@RequestBody TextWorkFilter filter) {
     GetWorksResponse response = workService.findWorksByFilter(filter);
     if (response.getLength() == 0) {
