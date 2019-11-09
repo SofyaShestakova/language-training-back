@@ -1,5 +1,10 @@
 package ru.shestakova.api.service.impl;
 
+import static ru.shestakova.api.service.impl.Mappers.mapFrom;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +24,6 @@ import ru.shestakova.model.TextWork;
 import ru.shestakova.repository.AssessmentRepository;
 import ru.shestakova.repository.ServiceUserRepository;
 import ru.shestakova.repository.TextWorkRepository;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static ru.shestakova.api.service.impl.Mappers.mapFrom;
 
 @Service
 @AllArgsConstructor
@@ -58,7 +57,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     }
 
     if (assessmentRepository
-        .findByWorkWorkIdAndExpertUserId(work.getWorkId(), user.getUserId())
+        .findByWorkIdAndExpertUserId(work.getWorkId(), user.getUserId())
         .isPresent()) {
       return new CreateAssessmentResponse()
           .setStatus(CreateAssessmentResponse.Status.ASSESSMENT_ALREADY_EXISTS);

@@ -24,7 +24,7 @@ public class Assessment extends Timestampable {
   @JoinColumn(name = "WorkId", nullable = false, updatable = false)
   TextWork work;
 
-  @OneToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "ExpertId", nullable = false, updatable = false)
   ServiceUser expert;
 

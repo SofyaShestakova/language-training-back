@@ -15,6 +15,7 @@ import ru.shestakova.api.response.text.EditAssessmentResponse;
 import ru.shestakova.api.response.text.GetAssessmentsResponse;
 import ru.shestakova.api.service.AssessmentService;
 
+@CrossOrigin
 @RestController
 @RequestMapping(
     path = "/assessments",
@@ -35,11 +36,11 @@ public class AssessmentController {
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response.getAssessment());
-      case INITIATOR_NOT_FOUND:
       case WORK_NOT_FOUND:
         return ResponseEntity.notFound().build();
       case ASSESSMENT_ALREADY_EXISTS:
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
+      case INITIATOR_NOT_FOUND:
       default:
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
