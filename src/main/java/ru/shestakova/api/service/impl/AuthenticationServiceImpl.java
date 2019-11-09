@@ -106,6 +106,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     return new AuthenticationResponse()
+        .setUsername(user.getUsername())
         .setStatus(AuthenticationResponse.Status.SUCCESS)
         .setToken(token)
         .setUserId(user.getUserId());

@@ -120,7 +120,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         request.setAttribute("UserId", authResponse.getUserId());
         chain.doFilter(request, response);
       } else {
-        response.setStatus(
+        response.sendError(
             HttpStatus.UNAUTHORIZED.value(),
             authResponse.getStatus().toString()
         );
