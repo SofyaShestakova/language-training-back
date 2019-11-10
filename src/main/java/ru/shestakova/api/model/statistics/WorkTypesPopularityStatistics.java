@@ -19,7 +19,6 @@ public class WorkTypesPopularityStatistics {
 
   Integer length;
   Map<WorkType, List<WorkTypePopularity>> statistics;
-  Long snapshotPeriod;
 
   @Data
   @Accessors(chain = true)
@@ -29,7 +28,6 @@ public class WorkTypesPopularityStatistics {
   public static class WorkTypePopularity {
 
     Integer worksWritten;
-    Long snapshotDateFrom;
-    Long snapshotDateTo;
+    Long snapshotDate;
   }
 }

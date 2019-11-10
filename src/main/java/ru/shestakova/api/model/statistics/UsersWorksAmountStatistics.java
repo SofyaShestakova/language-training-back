@@ -17,7 +17,6 @@ public class UsersWorksAmountStatistics {
 
   Integer length;
   List<WorksAmount> statistics;
-  Long snapshotPeriod;
 
   @Data
   @Accessors(chain = true)
