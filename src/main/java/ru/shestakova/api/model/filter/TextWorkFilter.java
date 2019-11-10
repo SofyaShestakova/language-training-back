@@ -39,7 +39,7 @@ public class TextWorkFilter {
   Long createdTo = Instant.now().toEpochMilli();
 
   Long editedFrom;
-  Long editedTo = Instant.now().toEpochMilli();
+  Long editedTo;
 
   Sort sort = Sort.NEWEST;
 

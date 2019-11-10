@@ -13,10 +13,10 @@ import java.util.List;
 @NoArgsConstructor @AllArgsConstructor
 public class ForumThemeFilter {
 
-  Long authorId;
+  Integer from = 0;
+  Integer count = 50;
 
-  Integer from;
-  Integer count;
+  Long authorId;
 
   Long createdFrom;
   Long createdTo;

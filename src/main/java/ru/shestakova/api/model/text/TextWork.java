@@ -20,4 +20,5 @@ public class TextWork {
     WorkType type;
     Long editDate;
     Long createDate;
+    Integer rating;
 }

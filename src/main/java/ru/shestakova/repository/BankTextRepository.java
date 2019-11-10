@@ -43,6 +43,21 @@ public interface BankTextRepository extends JpaRepository<BankText, Integer>,
     Page<BankText> page = findAll(expression, PageRequest.of(pageIndex, pageSize()));
 
     List<BankText> content = page.getContent();
-    return content.subList(skip, content.size());
+    content = content.subList(skip, content.size());
+
+    if (content.size() > filter.getCount()) {
+      content = content.subList(0, filter.getCount());
+    } else if (!content.isEmpty() && content.size() < filter.getCount()) {
+      List<BankText> moreContent = findAllByFilter(filter
+          .setFrom(filter.getFrom() + content.size())
+          .setCount(filter.getCount() - content.size())
+      );
+
+      if(!moreContent.isEmpty()) {
+        content.addAll(moreContent);
+      }
+    }
+
+    return content;
   }
 }

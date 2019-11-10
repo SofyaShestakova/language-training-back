@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QSort;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import ru.shestakova.model.QTextWork;
 import ru.shestakova.model.TextWork;
@@ -72,30 +71,44 @@ public interface TextWorkRepository extends JpaRepository<TextWork, Long>,
     int pageIndex = filter.getFrom() / pageSize();
     int skip = filter.getFrom() % pageSize();
 
-    Sort sort;
+    QSort sort;
     switch (filter.getSort()) {
       case RATING_ASCENDING:
-        sort = Sort.by(Direction.ASC, "Rating");
+        sort = new QSort(work.rating.asc());
         break;
       case RATING_DESCENDING:
-        sort = Sort.by(Direction.DESC, "Rating");
+        sort = new QSort(work.rating.desc());
         break;
       case AUTHOR_ID:
-        sort = Sort.by(Direction.ASC, "AuthorId");
+        sort = new QSort(work.author.userId.desc());
         break;
       case NEWEST:
-        sort = Sort.by(Direction.DESC, "CreateDate");
+        sort = new QSort(work.createDate.desc());
         break;
       case OLDEST:
-        sort = Sort.by(Direction.ASC, "CreateDate");
+        sort = new QSort(work.createDate.asc());
         break;
       default:
-        sort = Sort.unsorted();
+        sort = new QSort();
     }
 
     Page<TextWork> page = findAll(expression, PageRequest.of(pageIndex, pageSize(), sort));
 
     List<TextWork> content = page.getContent();
-    return content.subList(skip, content.size());
+    content = content.subList(skip, content.size());
+
+    if (content.size() > filter.getCount()) {
+      content = content.subList(0, filter.getCount());
+    } else if (!content.isEmpty() && content.size() < filter.getCount()) {
+      List<TextWork> moreContent = findAllByFilter(filter
+          .setFrom(filter.getFrom() + content.size())
+          .setCount(filter.getCount() - content.size())
+      );
+      if(!moreContent.isEmpty()) {
+        content.addAll(moreContent);
+      }
+    }
+
+    return content;
   }
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.shestakova.api.request.EditUserRequest;
 import ru.shestakova.api.response.user.EditUserResponse;
@@ -35,6 +36,21 @@ public class UserController {
       @PathVariable(name = "username") String username
   ) {
     GetDetailedUserResponse response = userService.getDetailedUser(username);
+    switch (response.getStatus()) {
+      case SUCCESS:
+        return ResponseEntity.ok(response);
+      case USER_NOT_FOUND:
+        return ResponseEntity.notFound().build();
+      default:
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  @GetMapping(path = "/details")
+  public ResponseEntity<GetDetailedUserResponse> getUser(
+      @RequestParam(name = "userId") Long userId
+  ) {
+    GetDetailedUserResponse response = userService.getDetailedUser(userId);
     switch (response.getStatus()) {
       case SUCCESS:
         return ResponseEntity.ok(response);

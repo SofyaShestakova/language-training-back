@@ -13,10 +13,11 @@ import java.util.List;
 @NoArgsConstructor @AllArgsConstructor
 public class AssessmentFilter {
 
-  Integer from;
-  Integer count;
+  Integer from = 0;
+  Integer count = 50;
 
   Long expertId;
+  Long workId;
   List<Integer> marks;
 
   Long createdFrom;
@@ -24,4 +25,13 @@ public class AssessmentFilter {
 
   Long editedFrom;
   Long editedTo;
+
+  Sort sort = Sort.NEWEST;
+
+  public enum Sort {
+    RATING_ASCENDING,
+    RATING_DESCENDING,
+    NEWEST,
+    OLDEST
+  }
 }

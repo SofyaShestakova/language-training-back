@@ -71,20 +71,24 @@ public class AssessmentServiceImpl implements AssessmentService {
             .setWork(work)
     );
 
+    workRepository.save(work.setRating(work.getRating() + assessment.getMarkRating()));
+
     return new CreateAssessmentResponse()
         .setStatus(CreateAssessmentResponse.Status.SUCCESS)
         .setAssessment(mapFrom(assessment));
   }
 
-  @Override public Optional<Assessment> findAssessmentById(Long assessmentId) {
+  @Override
+  public Optional<Assessment> findAssessmentById(Long assessmentId) {
     return assessmentRepository.findById(assessmentId).map(Mappers::mapFrom);
   }
 
-  @Override public GetAssessmentsResponse findAssessmentsByFilter(AssessmentFilter filter) {
+  @Override
+  public GetAssessmentsResponse findAssessmentsByFilter(AssessmentFilter filter) {
     List<Assessment> assessments = assessmentRepository.findAllByFilter(mapFrom(filter))
-                                          .stream()
-                                          .map(Mappers::mapFrom)
-                                          .collect(Collectors.toList());
+        .stream()
+        .map(Mappers::mapFrom)
+        .collect(Collectors.toList());
     return new GetAssessmentsResponse()
         .setLength(assessments.size())
         .setAssessments(assessments);
@@ -100,7 +104,8 @@ public class AssessmentServiceImpl implements AssessmentService {
           .setStatus(EditAssessmentResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    Optional<ru.shestakova.model.Assessment> assessmentOptional = assessmentRepository.findById(assessmentId);
+    Optional<ru.shestakova.model.Assessment> assessmentOptional = assessmentRepository
+        .findById(assessmentId);
     if (!assessmentOptional.isPresent()) {
       return new EditAssessmentResponse()
           .setStatus(EditAssessmentResponse.Status.ASSESSMENT_NOT_FOUND);
@@ -131,14 +136,16 @@ public class AssessmentServiceImpl implements AssessmentService {
         .setAssessment(mapFrom(assessment));
   }
 
-  @Override public DeleteAssessmentResponse deleteAssessment(Long initiatorId, Long assessmentId) {
+  @Override
+  public DeleteAssessmentResponse deleteAssessment(Long initiatorId, Long assessmentId) {
     Optional<ServiceUser> userOptional = userRepository.findById(initiatorId);
     if (!userOptional.isPresent()) {
       return new DeleteAssessmentResponse()
           .setStatus(DeleteAssessmentResponse.Status.INITIATOR_NOT_FOUND);
     }
 
-    Optional<ru.shestakova.model.Assessment> assessmentOptional = assessmentRepository.findById(assessmentId);
+    Optional<ru.shestakova.model.Assessment> assessmentOptional = assessmentRepository
+        .findById(assessmentId);
     if (!assessmentOptional.isPresent()) {
       return new DeleteAssessmentResponse()
           .setStatus(DeleteAssessmentResponse.Status.ASSESSMENT_NOT_FOUND);

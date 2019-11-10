@@ -9,14 +9,18 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
-@Data @Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor @AllArgsConstructor
+@Data
+@Accessors(chain = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class ForumMessageFilter {
+
+  Integer from = 0;
+  Integer count = 50;
+
   Integer themeId;
   Long authorId;
-
-  Integer from;
-  Integer count;
 
   Long createdFrom;
   Long createdTo;

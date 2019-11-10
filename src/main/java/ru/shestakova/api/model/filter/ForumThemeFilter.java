@@ -17,10 +17,10 @@ import java.util.List;
 @NoArgsConstructor @AllArgsConstructor
 public class ForumThemeFilter {
 
-  Long authorId;
-
   Integer from = 0;
   Integer count = 50;
+
+  Long authorId;
 
   Instant createdFrom = Instant.now().minus(Period.ofDays(7));
   Instant createdTo = Instant.now();

@@ -95,7 +95,8 @@ public class Mappers {
         .setAuthorId(work.getAuthor().getUserId())
         .setType(WorkType.fromNumeric(work.getType()))
         .setEditDate(work.getEditDate())
-        .setCreateDate(work.getCreateDate());
+        .setCreateDate(work.getCreateDate())
+        .setRating(work.getRating());
   }
 
   public static ru.shestakova.repository.filter.ForumThemeFilter mapFrom(ForumThemeFilter filter) {

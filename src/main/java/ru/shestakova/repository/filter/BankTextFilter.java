@@ -14,8 +14,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 public class BankTextFilter {
 
-  Integer from;
-  Integer count;
+  Integer from = 0;
+  Integer count = 50;
 
   Long createdFrom;
   Long createdTo;

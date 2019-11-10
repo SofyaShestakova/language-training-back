@@ -13,8 +13,8 @@ import java.util.List;
 @NoArgsConstructor @AllArgsConstructor
 public class TextWorkFilter {
 
-  Integer from;
-  Integer count;
+  Integer from = 0;
+  Integer count = 50;
 
   Integer textId;
   Long authorId;
@@ -30,7 +30,7 @@ public class TextWorkFilter {
   Long editedFrom;
   Long editedTo;
 
-  Sort sort;
+  Sort sort = Sort.NEWEST;
 
   public enum Sort {
     RATING_ASCENDING,
