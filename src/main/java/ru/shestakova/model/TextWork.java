@@ -1,42 +1,49 @@
 package ru.shestakova.model;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Repository;
 import ru.shestakova.util.Timestampable;
 
-import javax.persistence.*;
-
 @Entity
-@Table
-@Repository
-@Data @Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor @AllArgsConstructor @EqualsAndHashCode(callSuper = false)
+@Table(name = "РАБОТА_С_ТЕКСТОМ")
+@Data @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor @AllArgsConstructor
+@JsonInclude(Include.NON_NULL)
 public class TextWork extends Timestampable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "WorkId", nullable = false, updatable = false)
-  Long workId;
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "РАБОТА_С_ТЕКСТОМ_n_ПАРАГРАФА_seq")
+  @Column(name = "n_ТЕКСТА", nullable = false, updatable = false)
+  Integer id;
 
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "TextId", nullable = false, updatable = false)
-  BankText text;
+  @Column(name = "ТЕКСТ", nullable = false)
+  String text;
+
+  @Column(name = "РЕЙТИНГ_ТЕКСТА", nullable = false)
+  Integer rating;
 
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
-  @JoinColumn(name = "AuthorId", nullable = false, updatable = false)
+  @JoinColumn(name = "ИД_П", nullable = false, updatable = false)
   ServiceUser author;
 
-  @Column(name = "Type", nullable = false, updatable = false)
-  Integer type;
-
-  @Column(name = "WorkTitle", nullable = false)
-  String workTitle;
-
-  @Column(name = "WorkText", nullable = false, length = 2048)
-  String workText;
-
-  @Column(name = "Rating", nullable = false)
-  Integer rating;
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @JoinColumn(name = "n_ПАРАГРАФА", nullable = false, updatable = false)
+  BankText bankText;
 }

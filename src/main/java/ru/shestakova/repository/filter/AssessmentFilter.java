@@ -16,22 +16,14 @@ public class AssessmentFilter {
   Integer from = 0;
   Integer count = 50;
 
-  Long expertId;
-  Long workId;
-  List<Integer> marks;
+  Integer authorId;
+  Integer workId;
+  List<String> marks;
 
-  Long createdFrom;
-  Long createdTo;
-
-  Long editedFrom;
-  Long editedTo;
-
-  Sort sort = Sort.NEWEST;
+  Sort sort = Sort.RATING_DESCENDING;
 
   public enum Sort {
     RATING_ASCENDING,
-    RATING_DESCENDING,
-    NEWEST,
-    OLDEST
+    RATING_DESCENDING
   }
 }

@@ -1,3 +1,4 @@
+/*
 package ru.shestakova.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -73,3 +74,4 @@ public interface ForumThemeRepository extends JpaRepository<ForumTheme, Integer>
     return content.subList(skip, content.size());
   }
 }
+*/

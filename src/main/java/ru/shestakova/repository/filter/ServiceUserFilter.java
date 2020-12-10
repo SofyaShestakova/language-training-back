@@ -13,7 +13,4 @@ public class ServiceUserFilter {
 
   private Integer fromRating = 0;
   private Integer toRating = Integer.MAX_VALUE;
-
-  private Long registeredFrom;
-  private Long registeredTo;
 }

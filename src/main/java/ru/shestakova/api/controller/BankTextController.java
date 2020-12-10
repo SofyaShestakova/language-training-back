@@ -16,35 +16,35 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.shestakova.model.ServiceUser;
-import ru.shestakova.repository.ServiceUserRepository;
-import ru.shestakova.repository.filter.ServiceUserFilter;
+import ru.shestakova.model.BankText;
+import ru.shestakova.repository.BankTextRepository;
+import ru.shestakova.repository.filter.BankTextFilter;
 
 @CrossOrigin
 @RestController
 @RequestMapping(
-    path = "/users"
+    path = "/bank_texts"
 )
 @AllArgsConstructor
-public class UserController {
+public class BankTextController {
 
-  private final ServiceUserRepository repository;
+  private final BankTextRepository repository;
 
   @PostMapping(
       path = "create",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE
   )
-  ResponseEntity<ServiceUser> create(@RequestBody ServiceUser ServiceUser) {
-    return ResponseEntity.ok(repository.save(ServiceUser));
+  ResponseEntity<BankText> create(@RequestBody BankText bankText) {
+    return ResponseEntity.ok(repository.save(bankText));
   }
 
   @PostMapping(
       produces = MediaType.APPLICATION_JSON_VALUE
   )
-  ResponseEntity<List<ServiceUser>> find(@RequestBody(required = false) ServiceUserFilter filter) {
-//    final List<ServiceUser> results = repository.findAllByFilter(filter);
-    final List<ServiceUser> results = repository.findAll();
+  ResponseEntity<List<BankText>> find(@RequestBody(required = false) BankTextFilter filter) {
+//    final List<BankText> results = repository.findAllByFilter(filter);
+    final List<BankText> results = repository.findAll();
     if (results.isEmpty()) {
       return ResponseEntity.notFound().build();
     } else {
@@ -56,7 +56,7 @@ public class UserController {
       path = "{id}",
       produces = MediaType.APPLICATION_JSON_VALUE
   )
-  ResponseEntity<ServiceUser> findById(@PathVariable("id") Integer id) {
+  ResponseEntity<BankText> findById(@PathVariable("id") Integer id) {
     return repository.findById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
@@ -66,9 +66,9 @@ public class UserController {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE
   )
-  ResponseEntity<ServiceUser> update(@RequestBody ServiceUser ServiceUser) {
-    return Optional.ofNullable(ServiceUser)
-        .filter(it -> ServiceUser.getId() != null)
+  ResponseEntity<BankText> update(@RequestBody BankText bankText) {
+    return Optional.ofNullable(bankText)
+        .filter(it -> bankText.getId() != null)
         .filter(it -> repository.findById(it.getId()).isPresent())
         .map(it -> repository.save(merge(it, repository.findById(it.getId()).get())))
         .map(ResponseEntity::ok)
@@ -76,7 +76,7 @@ public class UserController {
   }
 
   @DeleteMapping(path = "{id}")
-  ResponseEntity<ServiceUser> delete(@PathVariable("id") Integer id) {
+  ResponseEntity<BankText> delete(@PathVariable("id") Integer id) {
     return repository.findById(id)
         .map(it -> {
           repository.delete(it);

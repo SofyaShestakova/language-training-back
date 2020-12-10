@@ -1,3 +1,4 @@
+/*
 package ru.shestakova.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -20,56 +21,34 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Long>,
     return 50;
   }
 
-  default Optional<Assessment> findByWorkIdAndExpertUserId(Long workId, Long userId) {
+  default Optional<Assessment> findByWorkIdAndExpertUserId(Integer workId, Integer userId) {
     QAssessment assessment = QAssessment.assessment;
-    return findOne(assessment.work.workId.eq(workId).and(assessment.expert.userId.eq(userId)));
+    return findOne(assessment.textWork.id.eq(workId).and(assessment.author.id.eq(userId)));
   }
 
   default List<Assessment> findAllByFilter(AssessmentFilter filter) {
     QAssessment assessment = QAssessment.assessment;
     BooleanExpression expression = Expressions.asBoolean(true).isTrue();
 
-    if (filter.getExpertId() != null) {
-      expression = expression.and(assessment.expert.userId.eq(filter.getExpertId()));
+    if (filter.getAuthorId() != null) {
+      expression = expression.and(assessment.author.id.eq(filter.getAuthorId()));
     }
 
     if (filter.getWorkId() != null) {
-      expression = expression.and(assessment.work.workId.eq(filter.getWorkId()));
+      expression = expression.and(assessment.textWork.id.eq(filter.getWorkId()));
     }
 
     if (filter.getMarks() != null && !filter.getMarks().isEmpty()) {
-      expression = expression.and(assessment.markRating.in(filter.getMarks()));
-    }
-
-    if (filter.getCreatedFrom() != null && filter.getCreatedFrom() >= 0) {
-      expression = expression.and(assessment.createDate.goe(filter.getCreatedFrom()));
-    }
-
-    if (filter.getCreatedTo() != null) {
-      expression = expression.and(assessment.createDate.loe(filter.getCreatedTo()));
-    }
-
-    if (filter.getEditedFrom() != null && filter.getEditedFrom() >= 0) {
-      expression = expression.and(assessment.editDate.goe(filter.getEditedFrom()));
-    }
-
-    if (filter.getEditedTo() != null) {
-      expression = expression.and(assessment.editDate.loe(filter.getEditedTo()));
+      expression = expression.and(assessment.mark.value.in(filter.getMarks()));
     }
 
     QSort sort;
     switch (filter.getSort()) {
       case RATING_ASCENDING:
-        sort = new QSort(assessment.markRating.asc());
+        sort = new QSort(assessment.mark.value.asc());
         break;
       case RATING_DESCENDING:
-        sort = new QSort(assessment.markRating.desc());
-        break;
-      case NEWEST:
-        sort = new QSort(assessment.createDate.desc());
-        break;
-      case OLDEST:
-        sort = new QSort(assessment.createDate.asc());
+        sort = new QSort(assessment.mark.value.desc());
         break;
       default:
         sort = new QSort();
@@ -97,3 +76,4 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Long>,
     return content;
   }
 }
+*/

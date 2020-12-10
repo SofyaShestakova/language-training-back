@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,25 +18,18 @@ import lombok.experimental.FieldDefaults;
 import ru.shestakova.util.Timestampable;
 
 @Entity
-@Table(name = "БАНК_ПАРАГРАФ")
+@Table(name = "БАНК_ТЕМА")
 @Data @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor @AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
-public class BankText extends Timestampable {
+public class BankTheme extends Timestampable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "ИД_ПАРАГРАФ", insertable = false, nullable = false, updatable = false)
+  @Column(name = "ИД_ТЕМ", insertable = false, nullable = false, updatable = false)
   Integer id;
 
-  @Column(name = "n_ПАРАГРАФА", nullable = false, updatable = false)
-  Integer textNumber = (id != null) ? id + 1 : 1;
-
-  @Column(name = "ТЕКСТ_ПАРАГРАФА", nullable = false)
-  String text;
-
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "ИД_ТЕМ")
-  BankTheme theme;
+  @Column(name = "ТЕМА", nullable = false)
+  String theme;
 }

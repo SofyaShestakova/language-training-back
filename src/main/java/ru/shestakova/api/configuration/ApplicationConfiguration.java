@@ -10,7 +10,7 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableAutoConfiguration
-@EnableConfigurationProperties({AuthenticationProperties.class, RegistrationProperties.class})
+@EnableConfigurationProperties
 public class ApplicationConfiguration {
 
   @Bean

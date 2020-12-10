@@ -1,3 +1,4 @@
+/*
 package ru.shestakova.api.controller;
 
 import lombok.AllArgsConstructor;
@@ -13,7 +14,6 @@ import ru.shestakova.api.response.text.CreateAssessmentResponse;
 import ru.shestakova.api.response.text.DeleteAssessmentResponse;
 import ru.shestakova.api.response.text.EditAssessmentResponse;
 import ru.shestakova.api.response.text.GetAssessmentsResponse;
-import ru.shestakova.api.service.AssessmentService;
 
 @CrossOrigin
 @RestController
@@ -100,3 +100,4 @@ public class AssessmentController {
     }
   }
 }
+*/

@@ -1,18 +1,12 @@
 package ru.shestakova.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.shestakova.model.ServiceUser;
 
-import java.util.Optional;
-import java.util.UUID;
-
 @Repository
-public interface ServiceUserRepository extends JpaRepository<ServiceUser, Long> {
+public interface ServiceUserRepository extends JpaRepository<ServiceUser, Integer> {
 
-  Optional<ServiceUser> findByUsername(String userName);
-
-  Optional<ServiceUser> findByEmail(String email);
-
-  Optional<ServiceUser> findByAuthToken(UUID authToken);
+  Optional<ServiceUser> findByName(String username);
 }

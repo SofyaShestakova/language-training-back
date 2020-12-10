@@ -15,27 +15,23 @@ public interface BankTextRepository extends JpaRepository<BankText, Integer>,
     QuerydslPredicateExecutor<BankText> {
 
   static int pageSize() {
-    return 50;
+    return 5;
   }
 
   default List<BankText> findAllByFilter(BankTextFilter filter) {
+    if (filter == null) {
+      filter = new BankTextFilter();
+    }
+
     QBankText text = QBankText.bankText;
     BooleanExpression expression = Expressions.asBoolean(true).isTrue();
 
-    if (filter.getCreatedFrom() != null && filter.getCreatedFrom() >= 0) {
-      expression = expression.and(text.createDate.goe(filter.getCreatedFrom()));
+    if (filter.getCreatedFrom() != null) {
+      expression = expression.and(text.creationDate.goe(filter.getCreatedFrom()));
     }
 
     if (filter.getCreatedTo() != null) {
-      expression = expression.and(text.createDate.loe(filter.getCreatedTo()));
-    }
-
-    if (filter.getEditedFrom() != null && filter.getEditedFrom() >= 0) {
-      expression = expression.and(text.editDate.goe(filter.getEditedFrom()));
-    }
-
-    if (filter.getEditedTo() != null) {
-      expression = expression.and(text.editDate.loe(filter.getEditedTo()));
+      expression = expression.and(text.creationDate.loe(filter.getCreatedTo()));
     }
 
     int pageIndex = filter.getFrom() / pageSize();
@@ -47,15 +43,6 @@ public interface BankTextRepository extends JpaRepository<BankText, Integer>,
 
     if (content.size() > filter.getCount()) {
       content = content.subList(0, filter.getCount());
-    } else if (!content.isEmpty() && content.size() < filter.getCount()) {
-      List<BankText> moreContent = findAllByFilter(filter
-          .setFrom(filter.getFrom() + content.size())
-          .setCount(filter.getCount() - content.size())
-      );
-
-      if(!moreContent.isEmpty()) {
-        content.addAll(moreContent);
-      }
     }
 
     return content;

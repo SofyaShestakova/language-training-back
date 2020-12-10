@@ -1,39 +1,45 @@
 package ru.shestakova.model;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Repository;
 import ru.shestakova.util.Timestampable;
 
-import javax.persistence.*;
-
 @Entity
-@Table
-@Repository
+@Table(name = "СООБЩЕНИЕ_ФОРУМ")
 @Data @Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor @AllArgsConstructor @EqualsAndHashCode(callSuper = false)
+@JsonInclude(Include.NON_NULL)
 public class ForumMessage extends Timestampable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "MessageId", insertable = false, updatable = false)
-  Long messageId;
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "СООБЩЕНИЕ_ФОРУМ_ИД_П_seq")
+  @Column(name = "n_СООБЩЕНИЯ", insertable = false, updatable = false, unique = true)
+  Integer id;
 
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "AuthorId", nullable = false, updatable = false)
-  ServiceUser author;
-
-  @Column(name = "MessageText", nullable = false)
+  @Column(name = "СООБЩЕНИЕ", nullable = false)
   String text;
 
-  @Column(name = "TerminationStatus", nullable = false)
-  Integer terminationStatus;
-
-  @Column(name = "DeleteDate")
-  Long deleteDate;
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @JoinColumn(name = "n_ТЕМЫ", updatable = false)
+  ForumTheme theme;
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "ThemeId", updatable = false)
-  ForumTheme theme;
+  @JoinColumn(name = "ИД_П", nullable = false, updatable = false)
+  ServiceUser author;
 }

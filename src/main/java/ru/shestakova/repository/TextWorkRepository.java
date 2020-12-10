@@ -1,3 +1,4 @@
+/*
 package ru.shestakova.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -112,3 +113,4 @@ public interface TextWorkRepository extends JpaRepository<TextWork, Long>,
     return content;
   }
 }
+*/

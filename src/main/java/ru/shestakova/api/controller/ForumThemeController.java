@@ -1,3 +1,4 @@
+/*
 package ru.shestakova.api.controller;
 
 import lombok.AllArgsConstructor;
@@ -189,3 +190,4 @@ public class ForumThemeController {
     }
   }
 }
+*/

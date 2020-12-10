@@ -16,35 +16,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.shestakova.model.ServiceUser;
-import ru.shestakova.repository.ServiceUserRepository;
-import ru.shestakova.repository.filter.ServiceUserFilter;
+import ru.shestakova.model.BankTheme;
+import ru.shestakova.repository.BankThemeRepository;
 
 @CrossOrigin
 @RestController
 @RequestMapping(
-    path = "/users"
+    path = "/bank_themes"
 )
 @AllArgsConstructor
-public class UserController {
+public class BankThemeController {
 
-  private final ServiceUserRepository repository;
+  private final BankThemeRepository repository;
 
   @PostMapping(
-      path = "create",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE
   )
-  ResponseEntity<ServiceUser> create(@RequestBody ServiceUser ServiceUser) {
-    return ResponseEntity.ok(repository.save(ServiceUser));
+  ResponseEntity<BankTheme> create(@RequestBody BankTheme bankTheme) {
+    return ResponseEntity.ok(repository.save(bankTheme));
   }
 
-  @PostMapping(
+  @GetMapping(
       produces = MediaType.APPLICATION_JSON_VALUE
   )
-  ResponseEntity<List<ServiceUser>> find(@RequestBody(required = false) ServiceUserFilter filter) {
-//    final List<ServiceUser> results = repository.findAllByFilter(filter);
-    final List<ServiceUser> results = repository.findAll();
+  ResponseEntity<List<BankTheme>> find() {
+    final List<BankTheme> results = repository.findAll();
     if (results.isEmpty()) {
       return ResponseEntity.notFound().build();
     } else {
@@ -56,7 +53,7 @@ public class UserController {
       path = "{id}",
       produces = MediaType.APPLICATION_JSON_VALUE
   )
-  ResponseEntity<ServiceUser> findById(@PathVariable("id") Integer id) {
+  ResponseEntity<BankTheme> findById(@PathVariable("id") Integer id) {
     return repository.findById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
@@ -66,17 +63,18 @@ public class UserController {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE
   )
-  ResponseEntity<ServiceUser> update(@RequestBody ServiceUser ServiceUser) {
-    return Optional.ofNullable(ServiceUser)
-        .filter(it -> ServiceUser.getId() != null)
+  ResponseEntity<BankTheme> update(@RequestBody BankTheme bankTheme) {
+    return Optional.ofNullable(bankTheme)
+        .filter(it -> bankTheme.getId() != null)
         .filter(it -> repository.findById(it.getId()).isPresent())
-        .map(it -> repository.save(merge(it, repository.findById(it.getId()).get())))
+        .map(it -> merge(it, repository.findById(it.getId()).get()))
+        .map(repository::save)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
 
   @DeleteMapping(path = "{id}")
-  ResponseEntity<ServiceUser> delete(@PathVariable("id") Integer id) {
+  ResponseEntity<BankTheme> delete(@PathVariable("id") Integer id) {
     return repository.findById(id)
         .map(it -> {
           repository.delete(it);

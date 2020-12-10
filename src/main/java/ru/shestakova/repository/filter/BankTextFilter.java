@@ -1,5 +1,6 @@
 package ru.shestakova.repository.filter;
 
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,11 +16,8 @@ import lombok.experimental.FieldDefaults;
 public class BankTextFilter {
 
   Integer from = 0;
-  Integer count = 50;
+  Integer count = 10;
 
-  Long createdFrom;
-  Long createdTo;
-
-  Long editedFrom;
-  Long editedTo;
+  LocalDate createdFrom;
+  LocalDate createdTo;
 }

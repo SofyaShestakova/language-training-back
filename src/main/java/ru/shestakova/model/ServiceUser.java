@@ -1,54 +1,35 @@
 package ru.shestakova.model;
 
-import lombok.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Repository;
-
-import javax.persistence.*;
-import java.util.Set;
-import java.util.UUID;
 
 @Entity
-@Table
-@Repository
+@Table(name = "ПОЛЬЗОВАТЕЛЬ")
 @Data @Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor @AllArgsConstructor
 public class ServiceUser {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "UserId", unique = true, nullable = false, updatable = false)
-  Long userId;
+  @Column(name = "ИД_П", unique = true, nullable = false, updatable = false)
+  Integer id;
 
-  @Column(name = "Username", unique = true, nullable = false, columnDefinition = "VARCHAR(40)")
-  String username;
+  @Column(name = "ИМЯ", unique = true, nullable = false)
+  String name;
 
-  @Column(name = "Password", nullable = false)
-  String password;
+  @Column(name = "УРОВЕНЬ")
+  Integer level;
 
-  @Column(name = "Email", unique = true)
-  String email;
-
-  @Column(name = "AvatarUrl", nullable = false)
-  String avatarUrl;
-
-  @Column(name = "AuthToken")
-  UUID authToken;
-
-  @Column(name = "Role")
-  String role;
-
-  @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", optional = false, fetch = FetchType.LAZY)
-  UserDetails details;
-
-  @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
-  @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
-  @EqualsAndHashCode.Exclude @ToString.Exclude
-  Set<ForumMessage> messages;
-
-  @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
-  @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
-  @EqualsAndHashCode.Exclude @ToString.Exclude
-  Set<BankText> texts;
+  @Column(name = "РЕЙТИНГ")
+  Integer rating;
 }

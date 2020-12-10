@@ -4,41 +4,37 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
-import ru.shestakova.util.Timestampable;
+import ru.shestakova.model.type.AssentMarkType;
 
 @Entity
-@Table(name = "БАНК_ПАРАГРАФ")
-@Data @EqualsAndHashCode(callSuper = false)
+@Table(name = "ЗНАЧЕНИЕ_ОЦЕНКИ")
+@Data
 @Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor @AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
-public class BankText extends Timestampable {
+public class AssessmentMark {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "ИД_ПАРАГРАФ", insertable = false, nullable = false, updatable = false)
+  @Column(name = "ИД_ОЦ", insertable = false, nullable = false, updatable = false, unique = true)
   Integer id;
 
-  @Column(name = "n_ПАРАГРАФА", nullable = false, updatable = false)
-  Integer textNumber = (id != null) ? id + 1 : 1;
+  @Enumerated(value = EnumType.STRING)
+  @Column(name = "ОЦЕНКА", insertable = false, nullable = false, updatable = false, unique = true)
+  AssentMarkType type;
 
-  @Column(name = "ТЕКСТ_ПАРАГРАФА", nullable = false)
-  String text;
-
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "ИД_ТЕМ")
-  BankTheme theme;
+  @Column(name = "ЗНАЧЕНИЕ", insertable = false, nullable = false, updatable = false)
+  String value;
 }
