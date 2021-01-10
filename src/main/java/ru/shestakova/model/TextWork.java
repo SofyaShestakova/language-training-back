@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -18,7 +20,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
-import ru.shestakova.util.Timestampable;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import ru.shestakova.model.type.PostgreSQLEnumType;
+import ru.shestakova.model.type.TextWorkType;
 
 @Entity
 @Table(name = "РАБОТА_С_ТЕКСТОМ")
@@ -26,10 +31,15 @@ import ru.shestakova.util.Timestampable;
 @Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor @AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
-public class TextWork extends Timestampable {
+@TypeDef(
+    name = "pgsql_enum",
+    typeClass = PostgreSQLEnumType.class
+)
+public class TextWork {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "РАБОТА_С_ТЕКСТОМ_n_ПАРАГРАФА_seq")
+  @SequenceGenerator(name = "РАБОТА_С_ТЕКСТОМ_n_ПАРАГРАФА_seq", allocationSize = 1)
   @Column(name = "n_ТЕКСТА", nullable = false, updatable = false)
   Integer id;
 
@@ -37,13 +47,18 @@ public class TextWork extends Timestampable {
   String text;
 
   @Column(name = "РЕЙТИНГ_ТЕКСТА", nullable = false)
-  Integer rating;
+  Integer rating = 0;
 
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @Enumerated(EnumType.STRING)
+  @Column(name = "ФОРМАТ", nullable = false, columnDefinition = "s244705.ФОРМАТ")
+  @Type(type = "pgsql_enum")
+  TextWorkType type;
+
+  @ManyToOne(optional = false)
   @JoinColumn(name = "ИД_П", nullable = false, updatable = false)
   ServiceUser author;
 
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false)
   @JoinColumn(name = "n_ПАРАГРАФА", nullable = false, updatable = false)
   BankText bankText;
 }

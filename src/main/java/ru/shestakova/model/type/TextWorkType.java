@@ -1,5 +1,7 @@
 package ru.shestakova.model.type;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,14 +9,22 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum TextWorkType {
 
-  COMMENT("комментарий"),
-  TRACT("трактовка"),
-  ANALYSIS("анализ");
+  @JsonProperty("комментарий")
+  комментарий("комментарий"),
+
+  @JsonProperty("трактовка")
+  трактовка("трактовка"),
+
+  @JsonProperty("анализ")
+  анализ("анализ");
 
   private final String name;
 
-  @Override
-  public String toString() {
-    return this.name;
+  public static TextWorkType fromString(String value) {
+    //noinspection OptionalGetWithoutIsPresent
+    return Arrays.stream(values())
+        .filter(it -> it.getName().equals(value))
+        .findFirst()
+        .get();
   }
 }

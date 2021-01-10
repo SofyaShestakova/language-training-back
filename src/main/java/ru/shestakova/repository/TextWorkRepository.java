@@ -1,10 +1,8 @@
-/*
 package ru.shestakova.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,32 +11,27 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import ru.shestakova.model.QTextWork;
 import ru.shestakova.model.TextWork;
 import ru.shestakova.repository.filter.TextWorkFilter;
+import ru.shestakova.util.Merger;
 
-public interface TextWorkRepository extends JpaRepository<TextWork, Long>,
+public interface TextWorkRepository extends JpaRepository<TextWork, Integer>,
     QuerydslPredicateExecutor<TextWork> {
 
   static int pageSize() {
-    return 50;
+    return Integer.MAX_VALUE;
   }
 
-  Optional<TextWork> findByTextTextIdAndAuthorUserIdAndType(
-      Integer textId, Long userId, Integer type
-  );
-
   default List<TextWork> findAllByFilter(TextWorkFilter filter) {
+    filter = Merger.merge(filter, new TextWorkFilter());
+
     QTextWork work = QTextWork.textWork;
     BooleanExpression expression = Expressions.asBoolean(true).isTrue();
 
     if (filter.getTextId() != null) {
-      expression = expression.and(work.text.textId.eq(filter.getTextId()));
+      expression = expression.and(work.bankText.id.eq(filter.getTextId()));
     }
 
     if (filter.getAuthorId() != null) {
-      expression = expression.and(work.author.userId.eq(filter.getAuthorId()));
-    }
-
-    if (filter.getWorkTypes() != null && !filter.getWorkTypes().isEmpty()) {
-      expression = expression.and(work.type.in(filter.getWorkTypes()));
+      expression = expression.and(work.author.id.eq(filter.getAuthorId()));
     }
 
     if (filter.getRatingFrom() != null && filter.getRatingFrom() >= 0) {
@@ -49,25 +42,9 @@ public interface TextWorkRepository extends JpaRepository<TextWork, Long>,
       expression = expression.and(work.rating.loe(filter.getRatingTo()));
     }
 
-    if (filter.getCreatedFrom() != null && filter.getCreatedFrom() >= 0) {
-      expression = expression.and(work.createDate.goe(filter.getCreatedFrom()));
-    }
-
-    if (filter.getCreatedTo() != null) {
-      expression = expression.and(work.createDate.loe(filter.getCreatedTo()));
-    }
-
-    if (filter.getEditedFrom() != null && filter.getEditedFrom() >= 0) {
-      expression = expression.and(work.editDate.goe(filter.getEditedFrom()));
-    }
-
-    if (filter.getEditedTo() != null) {
-      expression = expression.and(work.editDate.loe(filter.getEditedTo()));
-    }
-
-    if (filter.getCount() > pageSize()) {
+    /*if (filter.getCount() > pageSize()) {
       filter.setCount(pageSize());
-    }
+    }*/
 
     int pageIndex = filter.getFrom() / pageSize();
     int skip = filter.getFrom() % pageSize();
@@ -81,13 +58,13 @@ public interface TextWorkRepository extends JpaRepository<TextWork, Long>,
         sort = new QSort(work.rating.desc());
         break;
       case AUTHOR_ID:
-        sort = new QSort(work.author.userId.desc());
+        sort = new QSort(work.author.id.desc());
         break;
       case NEWEST:
-        sort = new QSort(work.createDate.desc());
+        sort = new QSort(work.id.desc());
         break;
       case OLDEST:
-        sort = new QSort(work.createDate.asc());
+        sort = new QSort(work.id.asc());
         break;
       default:
         sort = new QSort();
@@ -100,17 +77,8 @@ public interface TextWorkRepository extends JpaRepository<TextWork, Long>,
 
     if (content.size() > filter.getCount()) {
       content = content.subList(0, filter.getCount());
-    } else if (!content.isEmpty() && content.size() < filter.getCount()) {
-      List<TextWork> moreContent = findAllByFilter(filter
-          .setFrom(filter.getFrom() + content.size())
-          .setCount(filter.getCount() - content.size())
-      );
-      if(!moreContent.isEmpty()) {
-        content.addAll(moreContent);
-      }
     }
 
     return content;
   }
 }
-*/

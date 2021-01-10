@@ -41,11 +41,7 @@ public class Assessment {
   @Accessors(chain = true) @FieldDefaults(level = AccessLevel.PRIVATE)
   @NoArgsConstructor @AllArgsConstructor
   public static class Id implements Serializable {
-    /*@Column(name = "ИД_П", nullable = false, updatable = false)
-    Integer authorId;
 
-    @Column(name = "n_ТЕКСТА", nullable = false, updatable = false)
-    Integer textWorkId;*/
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "ИД_П", nullable = false, updatable = false)
     ServiceUser author;

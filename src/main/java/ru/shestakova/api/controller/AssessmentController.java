@@ -1,103 +1,126 @@
-/*
 package ru.shestakova.api.controller;
 
+import static ru.shestakova.util.Merger.merge;
+
+import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import ru.shestakova.api.model.filter.AssessmentFilter;
-import ru.shestakova.api.model.text.Assessment;
-import ru.shestakova.api.request.text.CreateAssessmentRequest;
-import ru.shestakova.api.request.text.EditAssessmentRequest;
-import ru.shestakova.api.response.text.CreateAssessmentResponse;
-import ru.shestakova.api.response.text.DeleteAssessmentResponse;
-import ru.shestakova.api.response.text.EditAssessmentResponse;
-import ru.shestakova.api.response.text.GetAssessmentsResponse;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import ru.shestakova.model.Assessment;
+import ru.shestakova.model.Assessment.Id;
+import ru.shestakova.model.ServiceUser;
+import ru.shestakova.model.TextWork;
+import ru.shestakova.model.type.AssentMarkType;
+import ru.shestakova.repository.AssessmentRepository;
+import ru.shestakova.repository.TextWorkRepository;
+import ru.shestakova.repository.filter.AssessmentFilter;
 
 @CrossOrigin
 @RestController
 @RequestMapping(
-    path = "/assessments",
-    consumes = MediaType.APPLICATION_JSON_VALUE,
-    produces = MediaType.APPLICATION_JSON_VALUE
+    path = "/assessments"
 )
 @AllArgsConstructor
 public class AssessmentController {
 
-  private AssessmentService assessmentService;
+  private final AssessmentRepository repository;
 
-  @PostMapping
-  ResponseEntity<Assessment> createAssessment(
-      @RequestAttribute("UserId") Long userId,
-      @RequestBody CreateAssessmentRequest request
-  ) {
-    CreateAssessmentResponse response = assessmentService.createAssessment(userId, request);
-    switch (response.getStatus()) {
-      case SUCCESS:
-        return ResponseEntity.ok(response.getAssessment());
-      case WORK_NOT_FOUND:
-        return ResponseEntity.notFound().build();
-      case ASSESSMENT_ALREADY_EXISTS:
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
-      case INITIATOR_NOT_FOUND:
-      default:
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+  private final TextWorkRepository textWorkRepository;
+
+  @PostMapping(
+      path = "create",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  ResponseEntity<Assessment> create(@RequestBody Assessment assessment) {
+    assessment = repository.save(assessment);
+
+    if (assessment.getMark().getType() == AssentMarkType._1) {
+      TextWork textWork = textWorkRepository.findById(assessment.getId().getTextWork().getId()).get();
+      textWork.setRating(textWork.getRating() + 1);
+
+      textWork = textWorkRepository.save(textWork);
+      assessment.getId().setTextWork(textWork);
+    }
+
+    return ResponseEntity.ok(assessment);
+  }
+
+  @PostMapping(
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  ResponseEntity<List<Assessment>> find(@RequestBody(required = false) AssessmentFilter filter) {
+    final List<Assessment> results = repository.findAllByFilter(filter);
+//    final List<TextWork> results = repository.findAll();
+    if (results.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    } else {
+      return ResponseEntity.ok(results);
     }
   }
 
-  @GetMapping(path = "{assessmentId}", consumes = MediaType.ALL_VALUE)
-  ResponseEntity<Assessment> findAssessmentById(@PathVariable("assessmentId") Long assessmentId) {
-    return assessmentService.findAssessmentById(assessmentId)
+  @GetMapping(
+      consumes = MediaType.ALL_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  ResponseEntity<Assessment> findById(
+      @RequestParam("authorId") Integer authorId,
+      @RequestParam("workId") Integer workId
+  ) {
+    final ServiceUser user = new ServiceUser();
+    user.setId(authorId);
+
+    final TextWork work = new TextWork();
+    work.setId(workId);
+
+    final Id id = new Id(user, work);
+
+    return repository.findById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
 
-  @GetMapping(consumes = MediaType.ALL_VALUE)
-  ResponseEntity<GetAssessmentsResponse> findAssessmentsByFilter(
-      @RequestBody AssessmentFilter filter
-  ) {
-    GetAssessmentsResponse response = assessmentService.findAssessmentsByFilter(filter);
-    if (response.getLength() == 0) {
-      return ResponseEntity.noContent().build();
-    } else {
-      return ResponseEntity.ok(response);
-    }
+  @PatchMapping(
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  ResponseEntity<Assessment> update(@RequestBody Assessment assessment) {
+    return Optional.ofNullable(assessment)
+        .filter(it -> assessment.getId() != null)
+        .filter(it -> repository.findById(it.getId()).isPresent())
+        .map(it -> repository.save(merge(it, repository.findById(it.getId()).get())))
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
   }
 
-  @PatchMapping(path = "{assessmentId}")
-  ResponseEntity<Assessment> editAssessment(
-      @RequestAttribute("UserId") Long userId,
-      @PathVariable("assessmentId") Long assessmentId,
-      @RequestBody EditAssessmentRequest request) {
-    EditAssessmentResponse response = assessmentService
-        .editAssessment(userId, assessmentId, request);
-    switch (response.getStatus()) {
-      case SUCCESS:
-        return ResponseEntity.ok(response.getAssessment());
-      case INITIATOR_NOT_FOUND:
-      case ASSESSMENT_NOT_FOUND:
-        return ResponseEntity.notFound().build();
-      default:
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-  }
-
-  @DeleteMapping(path = "{assessmentId}", consumes = MediaType.ALL_VALUE)
-  ResponseEntity<Assessment> deleteAssessment(
-      @RequestAttribute("UserId") Long userId,
-      @PathVariable("assessmentId") Long assessmentId
+  @DeleteMapping
+  ResponseEntity<Assessment> delete(
+      @RequestParam("authorId") Integer authorId,
+      @RequestParam("workId") Integer workId
   ) {
-    DeleteAssessmentResponse response = assessmentService.deleteAssessment(userId, assessmentId);
-    switch (response.getStatus()) {
-      case SUCCESS:
-        return ResponseEntity.ok(response.getAssessment());
-      case INITIATOR_NOT_FOUND:
-      case ASSESSMENT_NOT_FOUND:
-        return ResponseEntity.notFound().build();
-      default:
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
+    final ServiceUser user = new ServiceUser();
+    user.setId(authorId);
+
+    final TextWork work = new TextWork();
+    work.setId(workId);
+
+    final Id id = new Id(user, work);
+
+    return repository.findById(id)
+        .map(it -> {
+          repository.delete(it);
+          return ResponseEntity.ok(it);
+        })
+        .orElse(ResponseEntity.notFound().build());
   }
 }
-*/

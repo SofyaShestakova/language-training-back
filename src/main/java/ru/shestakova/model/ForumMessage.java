@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class ForumMessage extends Timestampable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "СООБЩЕНИЕ_ФОРУМ_ИД_П_seq")
+  @SequenceGenerator(name = "СООБЩЕНИЕ_ФОРУМ_ИД_П_seq", allocationSize = 1)
   @Column(name = "n_СООБЩЕНИЯ", insertable = false, updatable = false, unique = true)
   Integer id;
 

@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 public class ForumMessageFilter {
 
   Integer from = 0;
-  Integer count = 50;
+  Integer count = Integer.MAX_VALUE;
 
   Integer themeId;
   Long authorId;

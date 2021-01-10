@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,7 @@ public class ForumTheme extends Timestampable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "БАНК_ТЕМ_ФОРУМ_n_ТЕМЫ_seq")
+  @SequenceGenerator(name = "БАНК_ТЕМ_ФОРУМ_n_ТЕМЫ_seq", allocationSize = 1)
   @Column(name = "n_ТЕМЫ", nullable = false, updatable = false)
   Integer id;
 

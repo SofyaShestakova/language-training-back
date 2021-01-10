@@ -1,8 +1,10 @@
-/*
 package ru.shestakova.api.controller;
 
+import static ru.shestakova.util.Merger.merge;
+
+import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,101 +13,75 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.shestakova.api.model.filter.TextWorkFilter;
-import ru.shestakova.api.model.text.TextWork;
-import ru.shestakova.api.request.text.CreateWorkRequest;
-import ru.shestakova.api.request.text.EditWorkRequest;
-import ru.shestakova.api.response.text.CreateWorkResponse;
-import ru.shestakova.api.response.text.DeleteWorkResponse;
-import ru.shestakova.api.response.text.EditWorkResponse;
-import ru.shestakova.api.response.text.GetWorksResponse;
-import ru.shestakova.api.service.TextWorkService;
+import ru.shestakova.model.TextWork;
+import ru.shestakova.repository.TextWorkRepository;
+import ru.shestakova.repository.filter.TextWorkFilter;
 
+@CrossOrigin
 @RestController
 @RequestMapping(
-    path = "/works",
-    consumes = MediaType.APPLICATION_JSON_VALUE,
-    produces = MediaType.APPLICATION_JSON_VALUE
+    path = "/text_works"
 )
 @AllArgsConstructor
-@CrossOrigin
 public class TextWorkController {
 
-  private TextWorkService workService;
+  private final TextWorkRepository repository;
 
-  @PostMapping
-  ResponseEntity<TextWork> createWork(
-      @RequestAttribute("UserId") Long userId,
-      @RequestBody CreateWorkRequest request
-  ) {
-    CreateWorkResponse response;
-    response = workService.createWork(userId, request);
-    switch (response.getStatus()) {
-      case SUCCESS:
-        return ResponseEntity.ok(response.getWork());
-      case INITIATOR_NOT_FOUND:
-      case TEXT_NOT_FOUND:
-        return ResponseEntity.notFound().build();
-      case WORK_ALREADY_EXISTS:
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
-      default:
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+  @PostMapping(
+      path = "create",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  ResponseEntity<TextWork> create(@RequestBody TextWork textWork) {
+    return ResponseEntity.ok(repository.save(textWork));
+  }
+
+  @PostMapping(
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  ResponseEntity<List<TextWork>> find(@RequestBody(required = false) TextWorkFilter filter) {
+    final List<TextWork> results = repository.findAllByFilter(filter);
+//    final List<TextWork> results = repository.findAll();
+    if (results.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    } else {
+      return ResponseEntity.ok(results);
     }
   }
 
-  @GetMapping(path = "{workId}", consumes = MediaType.ALL_VALUE)
-  ResponseEntity<TextWork> findWorkById(@PathVariable(name = "workId") Long workId) {
-    return workService.findWorkById(workId)
+  @GetMapping(
+      path = "{id}",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  ResponseEntity<TextWork> findById(@PathVariable("id") Integer id) {
+    return repository.findById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
 
-  @PostMapping(path = "/filter")
-  ResponseEntity<GetWorksResponse> findWorksByFilter(@RequestBody TextWorkFilter filter) {
-    GetWorksResponse response = workService.findWorksByFilter(filter);
-    if (response.getLength() == 0) {
-      return ResponseEntity.noContent().build();
-    } else {
-      return ResponseEntity.ok(response);
-    }
+  @PatchMapping(
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  ResponseEntity<TextWork> update(@RequestBody TextWork textWork) {
+    return Optional.ofNullable(textWork)
+        .filter(it -> textWork.getId() != null)
+        .filter(it -> repository.findById(it.getId()).isPresent())
+        .map(it -> repository.save(merge(it, repository.findById(it.getId()).get())))
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
   }
 
-  @PatchMapping
-  ResponseEntity<TextWork> editWork(
-      @RequestAttribute("UserId") Long userId,
-      @PathVariable(name = "workId") Long workId,
-      @RequestBody EditWorkRequest request) {
-    EditWorkResponse response = workService.editWork(userId, workId, request);
-    switch (response.getStatus()) {
-      case SUCCESS:
-        return ResponseEntity.ok(response.getWork());
-      case INITIATOR_NOT_FOUND:
-      case WORK_NOT_FOUND:
-        return ResponseEntity.notFound().build();
-      default:
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-  }
-
-  @DeleteMapping(path = "{workId}", consumes = MediaType.ALL_VALUE)
-  ResponseEntity<TextWork> deleteWork(
-      @RequestAttribute("UserId") Long userId,
-      @PathVariable(name = "workId") Long workId
-  ) {
-    DeleteWorkResponse response = workService.deleteWork(userId, workId);
-    switch (response.getStatus()) {
-      case SUCCESS:
-        return ResponseEntity.ok(response.getWork());
-      case INITIATOR_NOT_FOUND:
-      case WORK_NOT_FOUND:
-        return ResponseEntity.notFound().build();
-      default:
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
+  @DeleteMapping(path = "{id}")
+  ResponseEntity<TextWork> delete(@PathVariable("id") Integer id) {
+    return repository.findById(id)
+        .map(it -> {
+          repository.delete(it);
+          return ResponseEntity.ok(it);
+        })
+        .orElse(ResponseEntity.notFound().build());
   }
 }
-*/

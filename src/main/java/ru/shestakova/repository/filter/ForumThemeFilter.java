@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 public class ForumThemeFilter {
 
   Integer from = 0;
-  Integer count = 50;
+  Integer count = Integer.MAX_VALUE;
 
   LocalDate createdFrom;
   LocalDate createdTo;

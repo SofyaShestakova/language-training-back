@@ -10,18 +10,17 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import ru.shestakova.model.BankText;
 import ru.shestakova.model.QBankText;
 import ru.shestakova.repository.filter.BankTextFilter;
+import ru.shestakova.util.Merger;
 
 public interface BankTextRepository extends JpaRepository<BankText, Integer>,
     QuerydslPredicateExecutor<BankText> {
 
   static int pageSize() {
-    return 5;
+    return Integer.MAX_VALUE;
   }
 
   default List<BankText> findAllByFilter(BankTextFilter filter) {
-    if (filter == null) {
-      filter = new BankTextFilter();
-    }
+    filter = Merger.merge(filter, new BankTextFilter());
 
     QBankText text = QBankText.bankText;
     BooleanExpression expression = Expressions.asBoolean(true).isTrue();

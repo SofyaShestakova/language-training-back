@@ -14,16 +14,18 @@ import java.util.List;
 public class AssessmentFilter {
 
   Integer from = 0;
-  Integer count = 50;
+  Integer count = Integer.MAX_VALUE;
 
   Integer authorId;
   Integer workId;
   List<String> marks;
 
-  Sort sort = Sort.RATING_DESCENDING;
+  Sort sort = Sort.NEWEST;
 
   public enum Sort {
     RATING_ASCENDING,
-    RATING_DESCENDING
+    RATING_DESCENDING,
+    NEWEST,
+    OLDEST
   }
 }

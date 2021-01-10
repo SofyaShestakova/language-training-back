@@ -1,4 +1,3 @@
-/*
 package ru.shestakova.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -14,7 +13,7 @@ import ru.shestakova.model.Assessment;
 import ru.shestakova.model.QAssessment;
 import ru.shestakova.repository.filter.AssessmentFilter;
 
-public interface AssessmentRepository extends JpaRepository<Assessment, Long>,
+public interface AssessmentRepository extends JpaRepository<Assessment, Assessment.Id>,
     QuerydslPredicateExecutor<Assessment> {
 
   static int pageSize() {
@@ -23,7 +22,7 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Long>,
 
   default Optional<Assessment> findByWorkIdAndExpertUserId(Integer workId, Integer userId) {
     QAssessment assessment = QAssessment.assessment;
-    return findOne(assessment.textWork.id.eq(workId).and(assessment.author.id.eq(userId)));
+    return findOne(assessment.id.textWork.id.eq(workId).and(assessment.id.author.id.eq(userId)));
   }
 
   default List<Assessment> findAllByFilter(AssessmentFilter filter) {
@@ -31,11 +30,11 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Long>,
     BooleanExpression expression = Expressions.asBoolean(true).isTrue();
 
     if (filter.getAuthorId() != null) {
-      expression = expression.and(assessment.author.id.eq(filter.getAuthorId()));
+      expression = expression.and(assessment.id.author.id.eq(filter.getAuthorId()));
     }
 
     if (filter.getWorkId() != null) {
-      expression = expression.and(assessment.textWork.id.eq(filter.getWorkId()));
+      expression = expression.and(assessment.id.textWork.id.eq(filter.getWorkId()));
     }
 
     if (filter.getMarks() != null && !filter.getMarks().isEmpty()) {
@@ -49,6 +48,12 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Long>,
         break;
       case RATING_DESCENDING:
         sort = new QSort(assessment.mark.value.desc());
+        break;
+      case NEWEST:
+        sort = new QSort(assessment.id.textWork.id.desc());
+        break;
+      case OLDEST:
+        sort = new QSort(assessment.id.textWork.id.asc());
         break;
       default:
         sort = new QSort();
@@ -76,4 +81,3 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Long>,
     return content;
   }
 }
-*/

@@ -31,7 +31,7 @@ public class AssessmentMark {
   @Column(name = "ИД_ОЦ", insertable = false, nullable = false, updatable = false, unique = true)
   Integer id;
 
-  @Enumerated(value = EnumType.STRING)
+  @Enumerated(value = EnumType.ORDINAL)
   @Column(name = "ОЦЕНКА", insertable = false, nullable = false, updatable = false, unique = true)
   AssentMarkType type;
 
