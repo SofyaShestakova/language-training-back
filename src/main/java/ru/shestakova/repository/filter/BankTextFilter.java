@@ -23,4 +23,11 @@ public class BankTextFilter {
 
   LocalDate createdFrom;
   LocalDate createdTo;
+
+  Sort sort = Sort.NEWEST;
+
+  public enum Sort {
+    NEWEST,
+    OLDEST
+  }
 }

@@ -44,7 +44,7 @@ public class BankTextController {
   )
   ResponseEntity<List<BankText>> find(@RequestBody(required = false) BankTextFilter filter) {
 //    final List<BankText> results = repository.findAllByFilter(filter);
-    final List<BankText> results = repository.findAll();
+    final List<BankText> results = repository.findAllByFilter(filter);
     if (results.isEmpty()) {
       return ResponseEntity.notFound().build();
     } else {

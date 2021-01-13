@@ -20,8 +20,8 @@ public class TextWorkFilter {
   Integer textId;
   Integer authorId;
 
-  Integer ratingFrom = 0;
-  Integer ratingTo = Integer.MAX_VALUE;
+  Integer ratingFrom;
+  Integer ratingTo;
 
   Sort sort = Sort.NEWEST;
 

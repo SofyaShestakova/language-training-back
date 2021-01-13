@@ -47,7 +47,7 @@ public class TextWork {
   String text;
 
   @Column(name = "РЕЙТИНГ_ТЕКСТА", nullable = false)
-  Integer rating = 0;
+  Integer rating;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "ФОРМАТ", nullable = false, columnDefinition = "s244705.ФОРМАТ")

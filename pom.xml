@@ -10,7 +10,7 @@
     </parent>
     <groupId>ru.shestakova</groupId>
     <artifactId>language-training-back</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <name>language-training-back</name>
     <description>Demo project for Spring Boot</description>
   <packaging>jar</packaging>

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QSort;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import ru.shestakova.model.BankText;
 import ru.shestakova.model.QBankText;
@@ -33,9 +34,21 @@ public interface BankTextRepository extends JpaRepository<BankText, Integer>,
       expression = expression.and(text.creationDate.loe(filter.getCreatedTo()));
     }
 
+    QSort sort;
+    switch (filter.getSort()) {
+      case NEWEST:
+        sort = new QSort(text.id.desc());
+        break;
+      case OLDEST:
+        sort = new QSort(text.id.asc());
+        break;
+      default:
+        sort = new QSort();
+    }
+
     int pageIndex = filter.getFrom() / pageSize();
     int skip = filter.getFrom() % pageSize();
-    Page<BankText> page = findAll(expression, PageRequest.of(pageIndex, pageSize()));
+    Page<BankText> page = findAll(expression, PageRequest.of(pageIndex, pageSize(), sort));
 
     List<BankText> content = page.getContent();
     content = content.subList(skip, content.size());

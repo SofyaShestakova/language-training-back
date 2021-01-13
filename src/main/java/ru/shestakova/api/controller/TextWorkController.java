@@ -36,7 +36,7 @@ public class TextWorkController {
       produces = MediaType.APPLICATION_JSON_VALUE
   )
   ResponseEntity<TextWork> create(@RequestBody TextWork textWork) {
-    return ResponseEntity.ok(repository.save(textWork));
+    return ResponseEntity.ok(repository.save(textWork.setRating(0)));
   }
 
   @PostMapping(
